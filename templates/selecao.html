@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seleção de Unidade | Grupo L&H</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #00509e;
+            --secondary: #003366;
+            --bg: #f8fafc;
+            --white: #ffffff;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+
+        body {
+            background: var(--bg);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .header-selection {
+            text-align: center;
+            margin-bottom: 50px;
+            animation: fadeInDown 0.8s ease;
+        }
+
+        .header-selection h1 {
+            color: var(--secondary);
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .header-selection p {
+            color: #64748b;
+            font-size: 1.1rem;
+        }
+
+        .selection-grid {
+            display: flex;
+            gap: 40px;
+            perspective: 1000px;
+            animation: fadeInUp 0.8s ease;
+        }
+
+        .company-card {
+            background: var(--white);
+            width: 320px;
+            height: 400px;
+            border-radius: 25px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .company-card:hover {
+            transform: translateY(-15px) scale(1.02);
+            border-color: var(--primary);
+            box-shadow: 0 20px 40px rgba(0, 80, 158, 0.15);
+        }
+
+        .icon-box {
+            width: 100px;
+            height: 100px;
+            background: #f1f5f9;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 25px;
+            transition: 0.3s;
+        }
+
+        .company-card:hover .icon-box {
+            background: var(--primary);
+            color: white;
+            transform: rotate(-10deg);
+        }
+
+        .icon-box i {
+            font-size: 3rem;
+            color: var(--primary);
+        }
+
+        .company-card:hover .icon-box i {
+            color: white;
+        }
+
+        .company-card h2 {
+            color: var(--secondary);
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 5px;
+        }
+
+        .company-card span {
+            color: #94a3b8;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .btn-enter {
+            margin-top: 30px;
+            padding: 10px 25px;
+            background: #f1f5f9;
+            color: var(--primary);
+            border-radius: 30px;
+            font-weight: bold;
+            font-size: 0.8rem;
+            transition: 0.3s;
+        }
+
+        .company-card:hover .btn-enter {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Animações */
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Background Decorativo */
+        .shape {
+            position: absolute;
+            background: linear-gradient(135deg, rgba(0,80,158,0.05) 0%, rgba(255,255,255,0) 100%);
+            border-radius: 50%;
+            z-index: -1;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="shape" style="width: 500px; height: 500px; top: -250px; left: -100px;"></div>
+    <div class="shape" style="width: 300px; height: 300px; bottom: -150px; right: -50px;"></div>
+
+    <div class="header-selection">
+        <h1>Selecione a Unidade de Gestão</h1>
+        <p>Olá, Nicolas. Qual empresa você deseja gerenciar agora?</p>
+    </div>
+
+    <div class="selection-grid">
+        
+        <a href="/set_empresa/leao" class="company-card">
+            <div class="icon-box">
+                <i class="fas fa-lion"></i>
+            </div>
+            <h2>LEÃO SERVIÇOS</h2>
+            <span>Unidade Operacional</span>
+            <div class="btn-enter">ACESSAR PAINEL</div>
+        </a>
+
+        <a href="/set_empresa/health" class="company-card">
+            <div class="icon-box">
+                <i class="fas fa-hospital-user"></i>
+            </div>
+            <h2>HEALTH MAX</h2>
+            <span>Unidade de Saúde</span>
+            <div class="btn-enter">ACESSAR PAINEL</div>
+        </a>
+
+    </div>
+
+    <footer style="position: absolute; bottom: 30px; color: #94a3b8; font-size: 0.8rem;">
+        Grupo Econômico L&H &copy; 2026 - Sistema ERP Premium
+    </footer>
+
+</body>
+</html>
