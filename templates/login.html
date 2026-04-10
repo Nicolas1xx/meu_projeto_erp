@@ -7,244 +7,179 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --primary-color: #00509e;
-            --secondary-color: #003366;
-            --text-color: #333;
-            --bg-color: #f0f2f5;
+            --primary: #00509e;
+            --secondary: #003366;
+            --bg: #f8fafc;
             --white: #ffffff;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
 
         body {
-            background: var(--bg-color);
             height: 100vh;
             display: flex;
-            align-items: center;
-            justify-content: center;
+            background: var(--white);
             overflow: hidden;
-            position: relative;
         }
 
-        /* Logos laterais decorativos de fundo */
-        .bg-brand {
-            position: absolute;
-            font-size: 10rem;
-            font-weight: 900;
-            color: rgba(0, 80, 158, 0.04);
-            user-select: none;
-            z-index: 1;
-            white-space: nowrap;
-        }
-        .brand-left { left: -50px; transform: rotate(-90deg); }
-        .brand-right { right: -50px; transform: rotate(90deg); }
-
-        /* Container Principal */
-        .login-container {
-            width: 100%;
-            max-width: 1200px;
-            display: flex;
-            align-items: center;
-            justify-content: space-around;
-            padding: 20px;
-            z-index: 2;
-        }
-
-        /* Estilo dos Logos Visíveis */
-        .side-logo {
-            flex: 1;
-            text-align: center;
-            font-size: 3.5rem;
-            font-weight: 800;
-            color: var(--primary-color);
-            letter-spacing: -2px;
+        /* Lado Esquerdo: Identidade Visual */
+        .brand-side {
+            flex: 1.2;
+            background: linear-gradient(135deg, #001f3f 0%, #00509e 100%);
             display: flex;
             flex-direction: column;
             align-items: center;
-        }
-
-        .side-logo span {
-            font-size: 1rem;
-            letter-spacing: 5px;
-            text-transform: uppercase;
-            color: #888;
-            margin-top: -10px;
-        }
-
-        /* Card de Login */
-        .login-card {
-            background: var(--white);
-            width: 400px;
+            justify-content: center;
+            color: white;
+            position: relative;
             padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.1);
-            border-top: 8px solid var(--primary-color);
-            transition: transform 0.3s ease;
         }
 
-        .login-card:hover { transform: translateY(-5px); }
-
-        .login-card h2 {
-            text-align: center;
-            color: var(--text-color);
-            margin-bottom: 10px;
-            font-size: 1.8rem;
-        }
-
-        .login-card p {
-            text-align: center;
-            color: #777;
-            margin-bottom: 30px;
-            font-size: 0.9rem;
-        }
-
-        /* Formulário */
-        .form-group { margin-bottom: 20px; position: relative; }
-
-        .form-group i {
+        .brand-side::before {
+            content: "";
             position: absolute;
-            left: 15px;
-            top: 42px;
-            color: var(--primary-color);
+            width: 100%; height: 100%;
+            background: url('https://www.transparenttextures.com/patterns/cubes.png');
+            opacity: 0.1;
         }
 
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #555;
-            font-size: 0.9rem;
+        .logo-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
         }
 
+        .logo-placeholder {
+            width: 120px;
+            height: 120px;
+            background: white;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            margin: 0 auto 30px;
+        }
+
+        .logo-placeholder i { font-size: 4rem; color: var(--primary); }
+
+        .brand-side h1 { font-size: 3rem; font-weight: 900; letter-spacing: -2px; line-height: 1; }
+        .brand-side p { font-size: 1.2rem; opacity: 0.8; margin-top: 15px; font-weight: 300; }
+
+        /* Lado Direito: Formulário */
+        .form-side {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 60px;
+            background: var(--bg);
+        }
+
+        .login-box {
+            width: 100%;
+            max-width: 400px;
+            animation: slideIn 0.8s ease;
+        }
+
+        @keyframes slideIn { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: translateX(0); } }
+
+        .login-box h2 { color: var(--secondary); font-size: 1.8rem; margin-bottom: 10px; font-weight: 800; }
+        .login-box p { color: #64748b; margin-bottom: 40px; }
+
+        .form-group { margin-bottom: 25px; }
+        .form-group label { display: block; font-size: 0.85rem; font-weight: 700; color: #475569; margin-bottom: 10px; }
+        
+        .input-container { position: relative; }
+        .input-container i { position: absolute; left: 15px; top: 15px; color: #94a3b8; }
+        
         input {
             width: 100%;
-            padding: 14px 14px 14px 45px;
-            border: 2px solid #e1e1e1;
+            padding: 14px 15px 14px 45px;
+            border: 2px solid #e2e8f0;
             border-radius: 12px;
             font-size: 1rem;
-            transition: all 0.3s;
-        }
-
-        input:focus {
-            border-color: var(--primary-color);
+            transition: 0.3s;
             outline: none;
-            box-shadow: 0 0 8px rgba(0, 80, 158, 0.1);
         }
 
-        .btn-login {
+        input:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(0, 80, 158, 0.1); }
+
+        .btn-enter {
             width: 100%;
             padding: 16px;
-            background: var(--primary-color);
+            background: var(--primary);
             color: white;
             border: none;
             border-radius: 12px;
-            font-size: 1.1rem;
-            font-weight: bold;
+            font-size: 1rem;
+            font-weight: 700;
             cursor: pointer;
-            transition: background 0.3s, transform 0.2s;
+            transition: 0.3s;
             margin-top: 10px;
         }
 
-        .btn-login:hover {
-            background: var(--secondary-color);
-            box-shadow: 0 5px 15px rgba(0, 80, 158, 0.3);
-        }
+        .btn-enter:hover { background: var(--secondary); transform: translateY(-2px); }
 
-        .btn-login:active { transform: scale(0.98); }
-
-        /* Alertas de Erro (Flask Flash) */
-        .alert {
-            background: #fff5f5;
-            color: #c0392b;
-            padding: 12px;
-            border-radius: 10px;
-            border-left: 5px solid #c0392b;
-            margin-bottom: 20px;
-            font-size: 0.85rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        /* Responsividade */
-        @media (max-width: 900px) {
-            .side-logo { display: none; }
-            .bg-brand { font-size: 6rem; }
-        }
+        .footer-info { margin-top: 40px; font-size: 0.75rem; color: #94a3b8; line-height: 1.5; }
     </style>
 </head>
 <body>
 
-    <div class="bg-brand brand-left">LEÃO SERVIÇOS</div>
-    <div class="bg-brand brand-right">HEALTH MAX</div>
-
-    <div class="login-container">
-        
-        <div class="side-logo">
-            LEÃO
-            <span>Serviços</span>
+    <div class="brand-side">
+        <div class="logo-content">
+            <div class="logo-placeholder">
+                <i class="fas fa-building-shield"></i>
+            </div>
+            <h1>GRUPO L&H</h1>
+            <p>Excelência em Gestão e Terceirização</p>
         </div>
+    </div>
 
-        <div class="login-card">
+    <div class="form-side">
+        <div class="login-box">
             <h2>Bem-vindo</h2>
-            <p>Acesse o portal administrativo do grupo</p>
-
-            {% with messages = get_flashed_messages(with_categories=true) %}
-              {% if messages %}
-                {% for category, message in messages %}
-                  <div class="alert">
-                      <i class="fas fa-exclamation-circle"></i>
-                      {{ message }}
-                  </div>
-                {% endfor %}
-              {% endif %}
-            {% endwith %}
+            <p>Identifique-se para acessar o ERP.</p>
 
             <form action="/login" method="POST">
                 <div class="form-group">
                     <label>CPF do Colaborador</label>
-                    <i class="fas fa-user"></i>
-                    <input type="text" name="cpf" id="cpf" placeholder="000.000.000-00" maxlength="14" required autocomplete="off">
+                    <div class="input-container">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="cpf" name="cpf" placeholder="000.000.000-00" maxlength="14" required>
+                    </div>
                 </div>
 
                 <div class="form-group">
-                    <label>Senha Numérica</label>
-                    <i class="fas fa-lock"></i>
-                    <input type="password" name="senha" placeholder="••••••" required>
+                    <label>Sua Senha</label>
+                    <div class="input-container">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" name="password" placeholder="••••••••" required>
+                    </div>
                 </div>
 
-                <button type="submit" class="btn-login">
-                    Entrar no Sistema <i class="fas fa-arrow-right" style="margin-left: 10px;"></i>
-                </button>
+                <button type="submit" class="btn-enter">ENTRAR NO SISTEMA</button>
             </form>
-            
-            <div style="text-align: center; margin-top: 25px; font-size: 0.8rem; color: #aaa;">
-                &copy; 2026 Grupo Econômico Leão & Health
+
+            <div class="footer-info">
+                © 2026 Grupo L&H Serviços e Saúde.<br>
+                Acesso monitorado. Em caso de dúvidas, contate o TI.
             </div>
         </div>
-
-        <div class="side-logo">
-            HEALTH
-            <span>Max</span>
-        </div>
-
     </div>
 
     <script>
-        // Máscara de CPF inteligente
+        // Máscara de CPF Automática
         const cpfInput = document.getElementById('cpf');
-
         cpfInput.addEventListener('input', function(e) {
-            let value = e.target.value.replace(/\D/g, ''); // Remove tudo que não é número
-            
-            if (value.length > 11) value = value.slice(0, 11);
-
-            // Aplica a formatação 000.000.000-00
-            value = value.replace(/(\d{3})(\d)/, '$1.$2');
-            value = value.replace(/(\d{3})(\d)/, '$1.$2');
-            value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
-
-            e.target.value = value;
+            let v = e.target.value.replace(/\D/g, "");
+            if (v.length <= 11) {
+                v = v.replace(/(\d{3})(\d)/, "$1.$2");
+                v = v.replace(/(\d{3})(\d)/, "$1.$2");
+                v = v.replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+            }
+            e.target.value = v;
         });
     </script>
 </body>

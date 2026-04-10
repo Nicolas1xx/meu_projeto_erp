@@ -11,181 +11,217 @@
             --success: #27ae60;
             --danger: #c0392b;
             --warning: #f39c12;
-            --bg: #f4f7f6;
-            --sidebar-w: 280px;
+            --bg: #f8fafc;
+            --white: #ffffff;
+            --sidebar-w: 260px;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-        body { background: var(--bg); display: flex; min-height: 100vh; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', 'Segoe UI', sans-serif; }
+        body { background: var(--bg); display: flex; color: #334155; }
 
-        /* Sidebar Reutilizável */
-        .sidebar { width: var(--sidebar-w); background: white; height: 100vh; position: fixed; padding: 30px 20px; box-shadow: 4px 0 10px rgba(0,0,0,0.05); }
-        .sidebar-brand { font-size: 1.6rem; font-weight: 800; color: var(--primary); margin-bottom: 40px; text-align: center; border-bottom: 2px solid var(--bg); padding-bottom: 20px; }
-        .nav-item { display: flex; align-items: center; padding: 15px; color: #555; text-decoration: none; border-radius: 12px; margin-bottom: 8px; transition: 0.3s; }
-        .nav-item i { margin-right: 15px; width: 20px; text-align: center; }
+        /* Sidebar padrão do Grupo L&H */
+        .sidebar { width: var(--sidebar-w); background: var(--white); height: 100vh; position: fixed; padding: 30px 20px; box-shadow: 4px 0 10px rgba(0,0,0,0.03); }
+        .sidebar-brand { font-size: 1.5rem; font-weight: 800; color: var(--primary); margin-bottom: 40px; text-align: center; }
+        .nav-item { display: flex; align-items: center; padding: 12px 15px; color: #64748b; text-decoration: none; border-radius: 10px; margin-bottom: 5px; transition: 0.2s; }
         .nav-item:hover, .nav-item.active { background: var(--primary); color: white; }
+        .nav-item i { margin-right: 12px; width: 20px; }
 
-        /* Main Content */
-        .main { margin-left: var(--sidebar-w); flex: 1; padding: 40px; }
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-        .company-badge { background: var(--primary); color: white; padding: 8px 20px; border-radius: 30px; font-weight: bold; font-size: 0.9rem; }
-
-        /* Dashboard de Metas */
-        .grid-metas { display: grid; grid-template-columns: repeat(2, 1fr); gap: 25px; margin-bottom: 40px; }
-        .card-meta { background: white; padding: 25px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-left: 8px solid var(--primary); }
-        .card-meta.alert { border-left-color: var(--danger); }
+        /* Área Principal */
+        .main { margin-left: var(--sidebar-w); flex: 1; padding: 40px; max-width: calc(100% - var(--sidebar-w)); }
         
-        .meta-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
-        .meta-title h4 { color: #333; font-size: 1.1rem; }
-        .meta-title span { color: #888; font-size: 0.85rem; }
+        /* Cabeçalho com Busca */
+        .page-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 30px; }
+        .search-bar { position: relative; width: 350px; }
+        .search-bar input { width: 100%; padding: 12px 15px 12px 45px; border-radius: 12px; border: 1px solid #e2e8f0; outline: none; transition: 0.3s; }
+        .search-bar i { position: absolute; left: 15px; top: 15px; color: #94a3b8; }
+        .search-bar input:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(0, 80, 158, 0.1); }
 
-        .progress-container { background: #eee; height: 14px; border-radius: 10px; margin: 15px 0; overflow: hidden; position: relative; }
-        .progress-bar { height: 100%; transition: 1s ease-in-out; border-radius: 10px; }
-        .bg-success { background: var(--success); }
-        .bg-danger { background: var(--danger); }
+        /* Cards de Resumo */
+        .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 30px; }
+        .stat-card { background: white; padding: 20px; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+        .stat-card small { color: #64748b; font-weight: 600; font-size: 0.75rem; text-transform: uppercase; }
+        .stat-card h2 { font-size: 1.5rem; margin-top: 5px; color: var(--secondary); }
 
-        .meta-stats { display: flex; justify-content: space-between; font-size: 0.9rem; font-weight: 600; }
-
-        /* Tabela de Contratos */
-        .card-table { background: white; border-radius: 20px; padding: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        .table-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        
+        /* Tabela Estilizada */
+        .table-container { background: white; border-radius: 16px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05); overflow: hidden; }
         table { width: 100%; border-collapse: collapse; }
-        th { text-align: left; padding: 15px; color: #888; font-size: 0.85rem; text-transform: uppercase; border-bottom: 2px solid var(--bg); }
-        td { padding: 18px 15px; border-bottom: 1px solid var(--bg); color: #444; font-size: 0.95rem; }
-        
-        .status-pill { padding: 6px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; }
-        .status-active { background: #e8f5e9; color: var(--success); }
-        .status-inactive { background: #ffebee; color: var(--danger); }
+        th { background: #f1f5f9; padding: 15px 20px; text-align: left; font-size: 0.85rem; color: #475569; font-weight: 700; }
+        td { padding: 18px 20px; border-bottom: 1px solid #f1f5f9; font-size: 0.9rem; }
+        tr:hover { background-color: #f8fafc; }
 
-        .btn-upload { background: #f0f4f8; color: var(--primary); padding: 8px 12px; border-radius: 8px; text-decoration: none; font-size: 0.85rem; font-weight: bold; transition: 0.3s; }
-        .btn-upload:hover { background: var(--primary); color: white; }
+        /* Status & Alertas */
+        .badge { padding: 6px 12px; border-radius: 8px; font-size: 0.75rem; font-weight: 700; }
+        .badge-success { background: #dcfce7; color: #166534; }
+        .badge-warning { background: #fef9c3; color: #854d0e; }
+        .badge-danger { background: #fee2e2; color: #991b1b; }
 
-        .btn-add { background: var(--primary); color: white; padding: 12px 25px; border-radius: 10px; text-decoration: none; font-weight: bold; display: inline-flex; align-items: center; gap: 10px; }
+        .profit-indicator { display: flex; align-items: center; gap: 8px; font-weight: 600; }
+        .profit-up { color: var(--success); }
+        .profit-down { color: var(--danger); }
+
+        /* Botão de Ação */
+        .btn-view { padding: 8px; border-radius: 8px; border: 1px solid #e2e8f0; background: white; cursor: pointer; transition: 0.2s; color: var(--primary); }
+        .btn-view:hover { background: var(--primary); color: white; border-color: var(--primary); }
+
+        /* Modal (Janela Flutuante) */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; }
+        .modal-content { background: white; width: 600px; border-radius: 20px; padding: 30px; position: relative; animation: slideIn 0.3s ease; }
+        @keyframes slideIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .close-modal { position: absolute; right: 25px; top: 25px; cursor: pointer; font-size: 1.5rem; color: #94a3b8; }
     </style>
 </head>
 <body>
 
     <nav class="sidebar">
         <div class="sidebar-brand">GRUPO L&H</div>
-        <a href="/dashboard" class="nav-item"><i class="fas fa-chart-line"></i> Dashboard</a>
-        <a href="/faturamento" class="nav-item"><i class="fas fa-hand-holding-usd"></i> Faturamento</a>
-        <a href="/rh" class="nav-item"><i class="fas fa-users-cog"></i> RH Corporativo</a>
-        <a href="/contratos" class="nav-item active"><i class="fas fa-file-contract"></i> Contratos / Metas</a>
-        <a href="/logout" class="nav-item" style="margin-top: 80px; color: var(--danger);"><i class="fas fa-power-off"></i> Sair</a>
+        <a href="/dashboard" class="nav-item"><i class="fas fa-home"></i> Home</a>
+        <a href="/faturamento" class="nav-item"><i class="fas fa-file-invoice-dollar"></i> Faturamento</a>
+        <a href="/rh" class="nav-item"><i class="fas fa-users"></i> RH Corporativo</a>
+        <a href="/contratos" class="nav-item active"><i class="fas fa-file-contract"></i> Contratos</a>
+        <a href="/logout" class="nav-item" style="margin-top: 100px; color: var(--danger);"><i class="fas fa-sign-out-alt"></i> Sair</a>
     </nav>
 
     <main class="main">
-        <div class="header">
+        <div class="page-header">
             <div>
-                <h1>Gestão de Contratos</h1>
-                <p style="color: #888;">Monitoramento de performance e licitações</p>
+                <h1 style="font-size: 1.8rem; font-weight: 800;">Gestão de Contratos</h1>
+                <p style="color: #64748b;">Acompanhamento de licitações e metas por unidade.</p>
             </div>
-            <div class="company-badge">{{ empresa }}</div>
+            <div class="search-bar">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="Pesquisar por município ou objeto...">
+            </div>
         </div>
 
-        <h3 style="margin-bottom: 20px; color: #444;">Dashboard de Metas Mensais</h3>
-        <div class="grid-metas">
-            
-            <div class="card-meta alert">
-                <div class="meta-header">
-                    <div class="meta-title">
-                        <h4>Itapeva - Ultrassonografia</h4>
-                        <span>Contrato Mensal: R$ 45.000,00</span>
-                    </div>
-                    <i class="fas fa-exclamation-circle" style="color: var(--danger); font-size: 1.5rem;"></i>
-                </div>
-                <p style="font-size: 0.9rem; color: #666;">Custo Operacional Atual (Exames Realizados):</p>
-                <div class="progress-container">
-                    <div class="progress-bar bg-danger" style="width: 112%;"></div>
-                </div>
-                <div class="meta-stats">
-                    <span>Meta: 500 exames</span>
-                    <span style="color: var(--danger);">Realizado: 560 exames (+12%)</span>
-                </div>
+        <div class="stats-row">
+            <div class="stat-card">
+                <small>Total em Contratos</small>
+                <h2>R$ 2.450.000</h2>
             </div>
-
-            <div class="card-meta">
-                <div class="meta-header">
-                    <div class="meta-title">
-                        <h4>Buri - Plantão Médico</h4>
-                        <span>Contrato Mensal: R$ 80.000,00</span>
-                    </div>
-                    <i class="fas fa-check-circle" style="color: var(--success); font-size: 1.5rem;"></i>
-                </div>
-                <p style="font-size: 0.9rem; color: #666;">Execução de Horas:</p>
-                <div class="progress-container">
-                    <div class="progress-bar bg-success" style="width: 85%;"></div>
-                </div>
-                <div class="meta-stats">
-                    <span>Meta: 720 horas</span>
-                    <span style="color: var(--success);">Realizado: 612 horas</span>
-                </div>
+            <div class="stat-card">
+                <small>Contratos Ativos</small>
+                <h2>12</h2>
             </div>
-
+            <div class="stat-card">
+                <small>Vencendo em 30 dias</small>
+                <h2 style="color: var(--warning);">02</h2>
+            </div>
+            <div class="stat-card">
+                <small>Alerta de Margem</small>
+                <h2 style="color: var(--danger);">01</h2>
+            </div>
         </div>
 
-        <div class="card-table">
-            <div class="table-header">
-                <h3>Contratos Ativos e Inativos</h3>
-                <a href="#" class="btn-add"><i class="fas fa-plus"></i> Novo Contrato</a>
-            </div>
-            <table>
+        <div class="table-container">
+            <table id="contractsTable">
                 <thead>
                     <tr>
-                        <th>Objeto / Município</th>
+                        <th>Município / Objeto</th>
                         <th>Vencimento</th>
-                        <th>Valor Total</th>
+                        <th>Valor Mensal</th>
+                        <th>Saúde Financeira</th>
                         <th>Status</th>
-                        <th>Ações</th>
+                        <th style="text-align: center;">Ações</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td><strong>Itapeva - USG Municipal</strong></td>
-                        <td>15/10/2026</td>
-                        <td>R$ 678.997,08</td>
-                        <td><span class="status-pill status-active">VIGENTE</span></td>
                         <td>
-                            <a href="#" class="btn-upload"><i class="fas fa-file-pdf"></i> Contrato/Aditivos</a>
+                            <strong>Itapeva</strong><br>
+                            <small style="color: #64748b;">Ultrassonografia (Licitação 042/26)</small>
+                        </td>
+                        <td>15/10/2026</td>
+                        <td>R$ 45.000,00</td>
+                        <td>
+                            <div class="profit-indicator profit-down">
+                                <i class="fas fa-arrow-trend-down"></i> -12% Margem
+                            </div>
+                        </td>
+                        <td><span class="badge badge-success">VIGENTE</span></td>
+                        <td style="text-align: center;">
+                            <button class="btn-view" onclick="openDetails('Itapeva')"><i class="fas fa-eye"></i></button>
                         </td>
                     </tr>
                     <tr>
-                        <td><strong>Buri - Plantões Médicos</strong></td>
-                        <td>02/01/2026</td>
-                        <td>R$ 1.200.000,00</td>
-                        <td><span class="status-pill status-active">RENOVAÇÃO</span></td>
                         <td>
-                            <a href="#" class="btn-upload"><i class="fas fa-file-pdf"></i> Ver Termos</a>
+                            <strong>Buri</strong><br>
+                            <small style="color: #64748b;">Plantões Médicos 24h</small>
                         </td>
-                    </tr>
-                    <tr style="opacity: 0.6;">
-                        <td>Taquarivaí - Raio X</td>
-                        <td>20/12/2025</td>
-                        <td>R$ 150.000,00</td>
-                        <td><span class="status-pill status-inactive">ENCERRADO</span></td>
+                        <td>02/01/2027</td>
+                        <td>R$ 120.000,00</td>
                         <td>
-                            <a href="#" class="btn-upload"><i class="fas fa-archive"></i> Arquivo</a>
+                            <div class="profit-indicator profit-up">
+                                <i class="fas fa-arrow-trend-up"></i> +18% Lucro
+                            </div>
+                        </td>
+                        <td><span class="badge badge-warning">RENOVAÇÃO</span></td>
+                        <td style="text-align: center;">
+                            <button class="btn-view" onclick="openDetails('Buri')"><i class="fas fa-eye"></i></button>
                         </td>
                     </tr>
                 </tbody>
             </table>
         </div>
-
     </main>
 
+    <div id="detailsModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <h2 id="modalTitle" style="color: var(--primary); margin-bottom: 20px;">Detalhes do Contrato</h2>
+            <hr style="border: 0; border-top: 1px solid #eee; margin-bottom: 20px;">
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div>
+                    <p><strong>Meta Contratada:</strong> 500 exames/mês</p>
+                    <p><strong>Realizado (Mês):</strong> 560 exames</p>
+                    <p><strong>Excesso de Custo:</strong> R$ 4.200,00</p>
+                </div>
+                <div style="background: #f8fafc; padding: 15px; border-radius: 12px; border-left: 4px solid var(--danger);">
+                    <p style="color: var(--danger); font-weight: bold;">Atenção:</p>
+                    <small>O volume de exames ultrapassou a meta do lance. Recomenda-se revisão da escala ou aditivo.</small>
+                </div>
+            </div>
+            
+            <button class="btn-view" style="width: 100%; margin-top: 25px; padding: 15px;">
+                <i class="fas fa-file-pdf"></i> Abrir Contrato Original (PDF)
+            </button>
+        </div>
+    </div>
+
     <script>
-        // Lógica simples para animação das barras ao carregar
-        window.onload = function() {
-            const bars = document.querySelectorAll('.progress-bar');
-            bars.forEach(bar => {
-                const width = bar.style.width;
-                bar.style.width = '0';
-                setTimeout(() => {
-                    bar.style.width = width;
-                }, 300);
-            });
-        };
+        // Função de busca em tempo real
+        function filterTable() {
+            let input = document.getElementById("searchInput");
+            let filter = input.value.toUpperCase();
+            let table = document.getElementById("contractsTable");
+            let tr = table.getElementsByTagName("tr");
+
+            for (let i = 1; i < tr.length; i++) {
+                let td = tr[i].getElementsByTagName("td")[0];
+                if (td) {
+                    let txtValue = td.textContent || td.innerText;
+                    tr[i].style.display = txtValue.toUpperCase().indexOf(filter) > -1 ? "" : "none";
+                }
+            }
+        }
+
+        // Funções do Modal
+        function openDetails(local) {
+            document.getElementById('modalTitle').innerText = 'Contrato: ' + local;
+            document.getElementById('detailsModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('detailsModal').style.display = 'none';
+        }
+
+        // Fecha o modal ao clicar fora dele
+        window.onclick = function(event) {
+            let modal = document.getElementById('detailsModal');
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
     </script>
 </body>
 </html>

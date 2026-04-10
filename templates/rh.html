@@ -8,57 +8,60 @@
         :root {
             --primary: #00509e;
             --secondary: #003366;
-            --success: #27ae60;
-            --info: #2980b9;
-            --bg: #f4f7f6;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --info: #3b82f6;
+            --bg: #f8fafc;
             --white: #ffffff;
-            --sidebar-w: 280px;
+            --sidebar-w: 260px;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-        body { background: var(--bg); display: flex; min-height: 100vh; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background: var(--bg); display: flex; color: #1e293b; }
 
-        /* Sidebar */
-        .sidebar { width: var(--sidebar-w); background: var(--white); height: 100vh; position: fixed; padding: 30px 20px; box-shadow: 4px 0 10px rgba(0,0,0,0.05); }
-        .sidebar-brand { font-size: 1.6rem; font-weight: 800; color: var(--primary); margin-bottom: 40px; text-align: center; border-bottom: 2px solid var(--bg); padding-bottom: 20px; }
-        .nav-item { display: flex; align-items: center; padding: 15px; color: #555; text-decoration: none; border-radius: 12px; margin-bottom: 8px; transition: 0.3s; }
-        .nav-item i { margin-right: 15px; width: 20px; text-align: center; }
+        /* Sidebar Customizada */
+        .sidebar { width: var(--sidebar-w); background: var(--white); height: 100vh; position: fixed; padding: 30px 20px; box-shadow: 4px 0 10px rgba(0,0,0,0.03); }
+        .sidebar-brand { font-size: 1.5rem; font-weight: 800; color: var(--primary); margin-bottom: 40px; text-align: center; }
+        .nav-item { display: flex; align-items: center; padding: 12px 15px; color: #64748b; text-decoration: none; border-radius: 10px; margin-bottom: 5px; transition: 0.2s; }
         .nav-item:hover, .nav-item.active { background: var(--primary); color: white; }
+        .nav-item i { margin-right: 12px; width: 20px; }
 
-        /* Main Content */
-        .main { margin-left: var(--sidebar-w); flex: 1; padding: 40px; }
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-        .company-badge { background: var(--primary); color: white; padding: 8px 20px; border-radius: 30px; font-weight: bold; font-size: 0.9rem; }
+        .main { margin-left: var(--sidebar-w); flex: 1; padding: 40px; max-width: calc(100% - var(--sidebar-w)); }
 
-        /* Navegação por Abas */
-        .tabs { display: flex; gap: 10px; margin-bottom: 30px; background: #e9ecef; padding: 5px; border-radius: 15px; width: fit-content; }
-        .tab-btn { padding: 12px 20px; border: none; border-radius: 10px; cursor: pointer; font-weight: 600; color: #666; transition: 0.3s; background: transparent; font-size: 0.9rem; }
+        /* Header e Resumo */
+        .page-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 30px; }
+        .stats-rh { display: flex; gap: 20px; margin-bottom: 30px; }
+        .stat-box { background: white; padding: 20px; border-radius: 15px; flex: 1; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); display: flex; align-items: center; gap: 15px; }
+        .stat-icon { width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
+
+        /* Tabs Profissionais */
+        .rh-tabs { display: flex; gap: 10px; margin-bottom: 25px; background: #e2e8f0; padding: 5px; border-radius: 12px; width: fit-content; }
+        .tab-btn { padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: 700; color: #64748b; transition: 0.3s; background: transparent; }
         .tab-btn.active { background: var(--white); color: var(--primary); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
 
-        /* Cards e Layout */
-        .card { background: var(--white); border-radius: 20px; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.02); }
-        .form-section { display: none; }
-        .form-section.active { display: block; animation: fadeIn 0.4s ease; }
+        /* Formulário e Tabela */
+        .card { background: white; border-radius: 20px; padding: 30px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05); margin-bottom: 30px; }
+        .form-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        .field { display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px; }
+        label { font-size: 0.85rem; font-weight: 700; color: #475569; }
+        input, select { padding: 12px; border: 1.5px solid #e2e8f0; border-radius: 10px; outline: none; }
+        input:focus { border-color: var(--primary); }
 
-        .form-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 25px; }
-        .field { display: flex; flex-direction: column; gap: 8px; }
-        label { font-weight: 600; color: #555; font-size: 0.85rem; }
-        input, select { padding: 12px; border: 2px solid #edeff2; border-radius: 10px; font-size: 0.95rem; }
-        input:focus { border-color: var(--primary); outline: none; }
+        /* Tabela de Colaboradores */
+        .employee-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        .employee-table th { text-align: left; padding: 15px; background: #f1f5f9; color: #475569; font-size: 0.85rem; }
+        .employee-table td { padding: 15px; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
+        
+        .avatar { width: 40px; height: 40px; background: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+        .badge-clt { background: #dcfce7; color: #166534; padding: 4px 8px; border-radius: 6px; font-size: 0.7rem; font-weight: 800; }
+        .badge-pj { background: #e0f2fe; color: #0369a1; padding: 4px 8px; border-radius: 6px; font-size: 0.7rem; font-weight: 800; }
 
-        .upload-zone { 
-            border: 2px dashed #d1d9e0; padding: 20px; border-radius: 12px; 
-            text-align: center; background: #f8fafc; cursor: pointer; margin-top: 10px;
-        }
-        .upload-zone:hover { border-color: var(--primary); background: #f0f7ff; }
+        .btn-action { border: none; background: #f1f5f9; padding: 8px; border-radius: 8px; cursor: pointer; color: #64748b; transition: 0.2s; }
+        .btn-action:hover { background: var(--primary); color: white; }
 
-        .btn-submit { 
-            background: var(--primary); color: white; border: none; padding: 15px 30px; 
-            border-radius: 12px; font-weight: bold; cursor: pointer; transition: 0.3s;
-            margin-top: 20px; width: 100%; max-width: 300px;
-        }
-        .btn-submit:hover { background: var(--secondary); transform: translateY(-2px); }
-
+        .section-content { display: none; }
+        .section-content.active { display: block; animation: fadeIn 0.4s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
@@ -66,119 +69,133 @@
 
     <nav class="sidebar">
         <div class="sidebar-brand">GRUPO L&H</div>
-        <a href="/dashboard" class="nav-item"><i class="fas fa-home"></i> Dashboard</a>
-        <a href="/faturamento" class="nav-item"><i class="fas fa-file-invoice-dollar"></i> Faturamento</a>
-        <a href="/rh" class="nav-item active"><i class="fas fa-users-cog"></i> RH Corporativo</a>
+        <a href="/dashboard" class="nav-item"><i class="fas fa-chart-line"></i> Dashboard</a>
+        <a href="/faturamento" class="nav-item"><i class="fas fa-wallet"></i> Faturamento</a>
+        <a href="/rh" class="nav-item active"><i class="fas fa-user-tie"></i> RH Corporativo</a>
         <a href="/contratos" class="nav-item"><i class="fas fa-file-contract"></i> Contratos</a>
-        <a href="/logout" class="nav-item" style="margin-top: 80px; color: #c0392b;"><i class="fas fa-power-off"></i> Sair</a>
+        <div style="margin-top: 50px; padding: 10px; font-size: 0.7rem; color: #94a3b8; border-top: 1px solid #f1f5f9;">
+            LOGADO COMO:<br><strong>ADMIN_NICOLAS</strong>
+        </div>
     </nav>
 
     <main class="main">
-        <div class="header">
+        <div class="page-header">
             <div>
-                <h1>Recursos Humanos</h1>
-                <p style="color: #888;">Gestão de colaboradores, benefícios e folha de pagamento</p>
+                <h1 style="font-size: 1.8rem; font-weight: 800;">Recursos Humanos</h1>
+                <p style="color: #64748b;">Gestão de contratos de trabalho e benefícios.</p>
             </div>
-            <div class="company-badge">{{ empresa }}</div>
+            <div style="display: flex; gap: 10px;">
+                <button class="btn-action" style="padding: 10px 20px; background: var(--primary); color: white;"><i class="fas fa-plus"></i> Novo Cadastro</button>
+            </div>
         </div>
 
-        <div class="tabs">
-            <button class="tab-btn active" onclick="showRH(event, 'cadastro')">Cadastro Colaborador</button>
-            <button class="tab-btn" onclick="showRH(event, 'folha')">Folha de Pagamento</button>
-            <button class="tab-btn" onclick="showRH(event, 'alimentacao')">Auxílio Alimentação</button>
-            <button class="tab-btn" onclick="showRH(event, 'custo')">Ajuda de Custo</button>
+        <div class="stats-rh">
+            <div class="stat-box">
+                <div class="stat-icon" style="background: #e0f2fe; color: var(--info);"><i class="fas fa-users"></i></div>
+                <div><small style="color: #64748b;">Colaboradores</small><h2>48</h2></div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-icon" style="background: #dcfce7; color: var(--success);"><i class="fas fa-check-circle"></i></div>
+                <div><small style="color: #64748b;">Ativos</small><h2>45</h2></div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-icon" style="background: #fee2e2; color: var(--danger);"><i class="fas fa-user-clock"></i></div>
+                <div><small style="color: #64748b;">Férias/Afast.</small><h2>03</h2></div>
+            </div>
         </div>
 
-        <div class="card">
-            <div id="cadastro" class="form-section active">
-                <h3 style="margin-bottom: 20px;"><i class="fas fa-user-plus"></i> Dados do Colaborador</h3>
-                <form action="/upload" method="POST" enctype="multipart/form-data">
-                    <input type="hidden" name="tipo_doc" value="Contrato Colaborador">
+        <div class="rh-tabs">
+            <button class="tab-btn active" onclick="switchRH(event, 'lista')">Equipe Atual</button>
+            <button class="tab-btn" onclick="switchRH(event, 'novo')">Admitir Colaborador</button>
+            <button class="tab-btn" onclick="switchRH(event, 'folha')">Folha & Benefícios</button>
+        </div>
+
+        <div id="lista" class="section-content active">
+            <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h3 style="font-size: 1.1rem;">Quadro de Funcionários</h3>
+                    <input type="text" placeholder="Filtrar por nome ou cargo..." style="padding: 8px 15px; border-radius: 8px; border: 1px solid #e2e8f0; width: 250px;">
+                </div>
+                <table class="employee-table">
+                    <thead>
+                        <tr>
+                            <th>Colaborador</th>
+                            <th>Cargo</th>
+                            <th>Unidade</th>
+                            <th>Tipo</th>
+                            <th>Status</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="display: flex; align-items: center; gap: 10px;">
+                                <div class="avatar">V</div>
+                                <strong>Vivian S.</strong>
+                            </td>
+                            <td>Gestora Administrativa</td>
+                            <td>Sorocaba/SP</td>
+                            <td><span class="badge-clt">CLT</span></td>
+                            <td><span style="color: var(--success); font-weight: bold;">● Ativo</span></td>
+                            <td><button class="btn-action"><i class="fas fa-edit"></i></button></td>
+                        </tr>
+                        <tr>
+                            <td style="display: flex; align-items: center; gap: 10px;">
+                                <div class="avatar" style="background: var(--secondary);">L</div>
+                                <strong>Luis Felipe</strong>
+                            </td>
+                            <td>Desenvolvedor Senior</td>
+                            <td>Health Max</td>
+                            <td><span class="badge-pj">NOTA FISCAL</span></td>
+                            <td><span style="color: var(--success); font-weight: bold;">● Ativo</span></td>
+                            <td><button class="btn-action"><i class="fas fa-edit"></i></button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="novo" class="section-content">
+            <div class="card">
+                <h3 style="margin-bottom: 25px;">Formulário de Admissão</h3>
+                <form>
                     <div class="form-grid">
-                        <div class="field"><label>Nome Completo</label><input type="text" placeholder="Nome do funcionário" required></div>
-                        <div class="field"><label>CEP</label><input type="text" id="cep" placeholder="00000-000"></div>
-                        <div class="field"><label>Cidade/Estado</label><input type="text" placeholder="Ex: Itapeva/SP"></div>
-                        
-                        <div class="field"><label>Função / Cargo</label><input type="text" placeholder="Ex: Enfermeiro" required></div>
+                        <div class="field"><label>Nome Completo</label><input type="text" placeholder="Ex: João Silva"></div>
+                        <div class="field"><label>CPF / CNPJ</label><input type="text" placeholder="000.000.000-00"></div>
                         <div class="field">
-                            <label>Tipo de Contratação</label>
-                            <select required>
-                                <option value="CLT">CLT</option>
-                                <option value="AUTONOMO">AUTÔNOMO</option>
-                                <option value="NOTA FISCAL">NOTA FISCAL (PJ)</option>
+                            <label>Tipo de Contrato</label>
+                            <select>
+                                <option>CLT (Carteira Assinada)</option>
+                                <option>PJ (Nota Fiscal)</option>
+                                <option>Autônomo (RPA)</option>
                             </select>
                         </div>
-                        <div class="field"><label>Valor da Contratação (R$)</label><input type="number" step="0.01" placeholder="0,00"></div>
-                        
-                        <div class="field"><label>Carga Horária</label><input type="text" placeholder="Ex: 40h semanais"></div>
-                        <div class="field"><label>Data Admissão</label><input type="date" required></div>
-                        <div class="field"><label>Data Desligamento</label><input type="date"></div>
+                        <div class="field"><label>Cargo / Função</label><input type="text" placeholder="Ex: Enfermeiro"></div>
+                        <div class="field"><label>Salário/Valor Hora</label><input type="text" placeholder="R$ 0,00"></div>
+                        <div class="field"><label>Data de Início</label><input type="date"></div>
+                    </div>
+                    
+                    <div style="background: #f8fafc; padding: 20px; border-radius: 12px; border: 1px dashed #cbd5e1; margin-top: 10px; text-align: center;">
+                        <i class="fas fa-file-upload" style="font-size: 2rem; color: var(--primary); margin-bottom: 10px;"></i>
+                        <p>Arraste o <strong>Contrato Assinado (PDF)</strong> ou clique para selecionar</p>
                     </div>
 
-                    <div class="field">
-                        <label>Contrato de Trabalho (Upload PDF)</label>
-                        <div class="upload-zone" onclick="document.getElementById('file-rh').click()">
-                            <i class="fas fa-file-signature" style="font-size: 1.5rem; color: var(--primary); margin-bottom: 10px; display: block;"></i>
-                            <span>Clique para anexar o contrato assinado</span>
-                            <input type="file" id="file-rh" name="arquivo" hidden>
-                        </div>
-                    </div>
-
-                    <button type="submit" class="btn-submit">Salvar Colaborador</button>
+                    <button type="submit" class="btn-action" style="width: 100%; margin-top: 20px; background: var(--primary); color: white; padding: 15px; font-weight: bold;">FINALIZAR ADMISSÃO</button>
                 </form>
-            </div>
-
-            <div id="folha" class="form-section">
-                <h3><i class="fas fa-money-check-alt"></i> Processamento de Folha</h3>
-                <p style="color: #666; margin-bottom: 20px;">Envie o arquivo consolidado da folha de pagamento do mês.</p>
-                <form action="/upload" method="POST" enctype="multipart/form-data">
-                    <input type="hidden" name="tipo_doc" value="Folha de Pagamento">
-                    <div class="form-grid" style="grid-template-columns: 1fr 1fr;">
-                        <div class="field"><label>Mês de Referência</label><input type="month"></div>
-                        <div class="field"><label>Valor Total da Folha (R$)</label><input type="number" step="0.01"></div>
-                    </div>
-                    <div class="upload-zone" onclick="document.getElementById('file-folha').click()">
-                        <i class="fas fa-file-excel" style="font-size: 1.5rem; color: #27ae60;"></i><br>
-                        <span>Anexar Relatório da Folha (Excel/PDF)</span>
-                        <input type="file" id="file-folha" name="arquivo" hidden>
-                    </div>
-                    <button type="submit" class="btn-submit">Registrar Folha</button>
-                </form>
-            </div>
-
-            <div id="alimentacao" class="form-section">
-                <h3><i class="fas fa-utensils"></i> Gestão de Auxílio Alimentação</h3>
-                <div class="form-grid" style="margin-top:20px;">
-                    <div class="field"><label>Colaborador</label><input type="text" placeholder="Buscar nome..."></div>
-                    <div class="field"><label>Valor do Auxílio</label><input type="number" step="0.01"></div>
-                    <div class="field"><label>Data de Pagamento</label><input type="date"></div>
-                </div>
-                <button type="button" class="btn-submit">Lançar Auxílio</button>
-            </div>
-
-            <div id="custo" class="form-section">
-                <h3><i class="fas fa-gas-pump"></i> Ajuda de Custo / Despesas</h3>
-                <div class="form-grid" style="margin-top:20px;">
-                    <div class="field"><label>Colaborador</label><input type="text" placeholder="Buscar nome..."></div>
-                    <div class="field"><label>Valor Reembolso</label><input type="number" step="0.01"></div>
-                    <div class="field"><label>Motivo</label><input type="text" placeholder="Ex: Viagem Buri"></div>
-                </div>
-                <button type="button" class="btn-submit">Lançar Ajuda de Custo</button>
             </div>
         </div>
+
     </main>
 
     <script>
-        function showRH(evt, sectionId) {
-            var i, sections, tablinks;
-            sections = document.getElementsByClassName("form-section");
-            for (i = 0; i < sections.length; i++) {
-                sections[i].classList.remove("active");
-            }
-            tablinks = document.getElementsByClassName("tab-btn");
-            for (i = 0; i < tablinks.length; i++) {
-                tablinks[i].classList.remove("active");
-            }
+        function switchRH(evt, sectionId) {
+            let i, contents, tabs;
+            contents = document.getElementsByClassName("section-content");
+            for (i = 0; i < contents.length; i++) contents[i].classList.remove("active");
+            
+            tabs = document.getElementsByClassName("tab-btn");
+            for (i = 0; i < tabs.length; i++) tabs[i].classList.remove("active");
+            
             document.getElementById(sectionId).classList.add("active");
             evt.currentTarget.classList.add("active");
         }

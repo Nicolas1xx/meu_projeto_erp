@@ -1,17 +1,14 @@
 import os
-from flask import Flask, render_template, redirect, url_for, request, flash, session
+from flask import Flask, render_template, request, redirect, url_for, session, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
-from werkzeug.security import generate_password_hash, check_password_hash
-from werkzeug.utils import secure_filename
 from datetime import datetime
 
-# --- CONFIGURAÇÃO INICIAL ---
+# Configuração Inicial
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'lh_group_security_key_2026_pro' # Chave de segurança da sessão
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///erp_lh.db' # Banco de Dados local
-app.config['UPLOAD_FOLDER'] = 'static/uploads' # Pasta para Notas Fiscais e Contratos
-app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # Limite de 16MB por arquivo
+app.config['SECRET_KEY'] = 'lh_erp_secure_key_2026'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///erp_lh.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 login_manager = LoginManager(app)
@@ -19,151 +16,136 @@ login_manager.login_view = 'login'
 
 # --- MODELOS DE BANCO DE DADOS ---
 
-# Tabela de Usuários (Administradores/Colaboradores)
-class Usuario(UserMixin, db.Model):
+class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100))
     cpf = db.Column(db.String(14), unique=True, nullable=False)
-    senha = db.Column(db.String(128), nullable=False)
-    nome = db.Column(db.String(100), nullable=True)
+    password = db.Column(db.String(100), nullable=False)
 
-# Tabela de Documentos (Uploads de NF, Empenhos, Contratos)
-class Documento(db.Model):
+class Faturamento(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    filename = db.Column(db.String(200))
-    tipo = db.Column(db.String(50)) # NF, Contrato, Boleto
-    empresa = db.Column(db.String(20)) # LEAO ou HEALTH
-    data_upload = db.Column(db.DateTime, default=datetime.utcnow)
+    empresa_slug = db.Column(db.String(50)) # 'leao' ou 'health'
+    categoria = db.Column(db.String(100))
+    valor = db.Column(db.Float)
+    vencimento = db.Column(db.Date)
+    status = db.Column(db.String(20), default='Pendente')
+    data_registro = db.Column(db.DateTime, default=datetime.utcnow)
+
+class Colaborador(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    empresa_slug = db.Column(db.String(50))
+    nome = db.Column(db.String(100))
+    cpf = db.Column(db.String(14))
+    tipo_contrato = db.Column(db.String(20)) # CLT ou PJ
+    cargo = db.Column(db.String(100))
+    status = db.Column(db.String(20), default='Ativo')
 
 @login_manager.user_loader
 def load_user(user_id):
-    return Usuario.query.get(int(user_id))
+    return User.query.get(int(user_id))
 
-# --- ROTAS DE AUTENTICAÇÃO ---
+# --- ROTAS DE NAVEGAÇÃO E LOGIN ---
 
 @app.route('/')
 def index():
+    if current_user.is_authenticated:
+        return redirect(url_for('selecao'))
     return redirect(url_for('login'))
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        cpf_input = request.form.get('cpf').replace('.', '').replace('-', '')
-        senha_input = request.form.get('senha')
+        # Recebe o CPF vindo do formulário (com ou sem máscara)
+        cpf_input = request.form.get('cpf')
+        password_input = request.form.get('password')
         
-        user = Usuario.query.filter_by(cpf=cpf_input).first()
+        # Busca no banco pelo CPF exato
+        user = User.query.filter_by(cpf=cpf_input).first()
         
-        # LOGICA DE PRIMEIRO ACESSO: Cria o admin se o banco estiver vazio
-        if not user and cpf_input == '12345678900':
-            admin_user = Usuario(
-                cpf='12345678900', 
-                senha=generate_password_hash('123456'),
-                nome="Administrador Nicolas"
-            )
-            db.session.add(admin_user)
-            db.session.commit()
-            user = admin_user
-
-        if user and check_password_hash(user.senha, senha_input):
+        if user and user.password == password_input:
             login_user(user)
             return redirect(url_for('selecao'))
         
         flash('CPF ou Senha incorretos. Tente novamente.', 'danger')
+    
     return render_template('login.html')
 
 @app.route('/logout')
 @login_required
 def logout():
     logout_user()
-    session.clear() # Limpa a empresa selecionada
+    session.clear()
     return redirect(url_for('login'))
 
-# --- ROTAS DE NAVEGAÇÃO ---
+# --- SELEÇÃO DE EMPRESA ---
 
 @app.route('/selecao')
 @login_required
 def selecao():
-    return render_template('selecao.html')
+    return render_template('selecao.html', nome=current_user.name)
 
-@app.route('/set_empresa/<empresa>')
+@app.route('/set_empresa/<empresa_id>')
 @login_required
-def set_empresa(empresa):
-    # Define qual CNPJ o sistema vai operar nesta sessão
-    if empresa == 'leao':
-        session['empresa_nome'] = "LEÃO SERVIÇOS"
-        session['empresa_slug'] = "leao"
-    else:
-        session['empresa_nome'] = "HEALTH MAX"
-        session['empresa_slug'] = "health"
-    return redirect(url_for('dashboard'))
+def set_empresa(empresa_id):
+    # Dicionário para converter o slug em nome amigável
+    nomes = {'leao': 'Leão Serviços', 'health': 'Health Max'}
+    
+    if empresa_id in nomes:
+        session['empresa_ativa'] = nomes[empresa_id]
+        session['empresa_slug'] = empresa_id
+        return redirect(url_for('dashboard'))
+    return redirect(url_for('selecao'))
+
+# --- MÓDULOS DO ERP ---
 
 @app.route('/dashboard')
 @login_required
 def dashboard():
-    return render_template('dashboard.html', empresa=session.get('empresa_nome'))
+    empresa = session.get('empresa_ativa', 'Grupo L&H')
+    return render_template('dashboard.html', empresa=empresa)
 
 @app.route('/faturamento')
 @login_required
 def faturamento():
-    return render_template('faturamento.html', empresa=session.get('empresa_nome'))
+    empresa = session.get('empresa_ativa')
+    slug = session.get('empresa_slug')
+    # Filtra os dados no banco pela empresa selecionada
+    dados = Faturamento.query.filter_by(empresa_slug=slug).all()
+    return render_template('faturamento.html', empresa=empresa, lancamentos=dados)
 
 @app.route('/rh')
 @login_required
 def rh():
-    return render_template('rh.html', empresa=session.get('empresa_nome'))
+    empresa = session.get('empresa_ativa')
+    slug = session.get('empresa_slug')
+    equipe = Colaborador.query.filter_by(empresa_slug=slug).all()
+    return render_template('rh.html', empresa=empresa, colaboradores=equipe)
 
 @app.route('/contratos')
 @login_required
 def contratos():
-    return render_template('contratos.html', empresa=session.get('empresa_nome'))
+    empresa = session.get('empresa_ativa')
+    return render_template('contratos.html', empresa=empresa)
 
-# --- LOGICA DE UPLOAD PROFISSIONAL ---
+# --- INICIALIZAÇÃO DO SISTEMA ---
 
-@app.route('/upload', methods=['POST'])
-@login_required
-def upload_file():
-    if 'arquivo' not in request.files:
-        flash('Nenhum arquivo selecionado')
-        return redirect(request.referrer)
-    
-    file = request.files['arquivo']
-    tipo_doc = request.form.get('tipo_doc', 'Outros')
-    
-    if file.filename == '':
-        flash('Nome de arquivo inválido')
-        return redirect(request.referrer)
-
-    if file:
-        filename = secure_filename(file.filename)
-        # Organiza pastas por empresa: uploads/leao/ ou uploads/health/
-        empresa_folder = session.get('empresa_slug', 'geral')
-        upload_path = os.path.join(app.config['UPLOAD_FOLDER'], empresa_folder)
+def setup_erp():
+    """Cria o banco de dados e o usuário mestre do Nicolas"""
+    with app.app_context():
+        db.create_all()
         
-        if not os.path.exists(upload_path):
-            os.makedirs(upload_path)
-            
-        file.save(os.path.join(upload_path, filename))
-        
-        # Salva o registro no banco de dados
-        novo_doc = Documento(
-            filename=filename, 
-            tipo=tipo_doc, 
-            empresa=session.get('empresa_slug')
-        )
-        db.session.add(novo_doc)
-        db.session.commit()
-        
-        flash(f'Documento "{filename}" enviado com sucesso!', 'success')
-        return redirect(request.referrer)
-
-# --- INICIALIZAÇÃO DO SERVIDOR ---
+        # Verifica se o Nicolas já está cadastrado
+        nicolas_cpf = "000.000.000-00"
+        if not User.query.filter_by(cpf=nicolas_cpf).first():
+            admin = User(
+                name="Nicolas Silva",
+                cpf=nicolas_cpf,
+                password="123" # Senha padrão inicial
+            )
+            db.session.add(admin)
+            db.session.commit()
+            print(">>> Banco de dados criado e usuário mestre (Nicolas) cadastrado.")
 
 if __name__ == '__main__':
-    with app.app_context():
-        # Cria as tabelas se elas não existirem
-        db.create_all()
-        # Cria a pasta de uploads inicial
-        if not os.path.exists(app.config['UPLOAD_FOLDER']):
-            os.makedirs(app.config['UPLOAD_FOLDER'])
-            
-    print(">>> Sistema do Grupo L&H Iniciado com Sucesso!")
+    setup_erp()
     app.run(debug=True)
