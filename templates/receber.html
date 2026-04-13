@@ -110,7 +110,7 @@
 
         <div class="month-filter">
             {% for m in ['Todos', 'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'] %}
-            <a href="/receber?mes={{ m }}" class="btn-month {{ 'active' if mes_selecionado == m }}">
+            <a href="/receber?mes={{ m }}" class="btn-month {{ 'active' if mes_selecionado == m else '' }}">
                 {{ m }}
             </a>
             {% endfor %}
@@ -163,21 +163,21 @@
                         {% for conta in contas %}
                         <tr>
                             <td style="font-weight: 700;">{{ conta.mes_referencia }}</td>
-                            <td><span class="status-badge {{ 'status-pago' if 'PAGO' in conta.status|upper else 'status-aberto' }}">{{ conta.status }}</span></td>
+                            <td><span class="status-badge {{ 'status-pago' if 'PAGO' in (conta.status|upper if conta.status else '') else 'status-aberto' }}">{{ conta.status }}</span></td>
                             <td>{{ conta.cidade }}</td>
                             <td>{{ conta.servico }}</td>
                             <td>{{ conta.nf }}</td>
                             <td>{{ conta.empresa_planilha }}</td>
                             <td>{{ conta.emissao_nota }}</td>
                             <td>{{ conta.vencimento }}</td>
-                            <td style="font-weight: 700;">R$ {{ "{:,.2f}".format(conta.valor_nota or 0) }}</td>
+                            <td style="font-weight: 700;">R$ {{ "{:,.2f}".format(conta.valor_nota or 0.0) }}</td>
                             <td>{{ conta.iss_retido }}</td>
-                            <td>R$ {{ "{:,.2f}".format(conta.valor_iss or 0) }}</td>
+                            <td>R$ {{ "{:,.2f}".format(conta.valor_iss or 0.0) }}</td>
                             <td>{{ conta.porcentagem }}</td>
-                            <td>R$ {{ "{:,.2f}".format(conta.valor_ir or 0) }}</td>
-                            <td>R$ {{ "{:,.2f}".format(conta.valor_liquido or 0) }}</td>
-                            <td style="font-weight: 700; color: var(--primary);">R$ {{ "{:,.2f}".format(conta.valor_recebido or 0) }}</td>
-                            <td style="color: var(--danger); font-weight: 700;">R$ {{ "{:,.2f}".format(conta.diferenca or 0) }}</td>
+                            <td>R$ {{ "{:,.2f}".format(conta.valor_ir or 0.0) }}</td>
+                            <td>R$ {{ "{:,.2f}".format(conta.valor_liquido or 0.0) }}</td>
+                            <td style="font-weight: 700; color: var(--primary);">R$ {{ "{:,.2f}".format(conta.valor_recebido or 0.0) }}</td>
+                            <td style="color: var(--danger); font-weight: 700;">R$ {{ "{:,.2f}".format(conta.diferenca or 0.0) }}</td>
                             <td>{{ conta.data_pg }}</td>
                             <td style="text-align: center; position: sticky; right: 0; background: white;">
                                 <a href="/deletar_receber/{{ conta.id }}" class="btn-delete" onclick="return confirm('Excluir este registro permanentemente?')">
@@ -204,6 +204,13 @@
                         <option value="Março">Março</option>
                         <option value="Abril">Abril</option>
                         <option value="Maio">Maio</option>
+                        <option value="Junho">Junho</option>
+                        <option value="Julho">Julho</option>
+                        <option value="Agosto">Agosto</option>
+                        <option value="Setembro">Setembro</option>
+                        <option value="Outubro">Outubro</option>
+                        <option value="Novembro">Novembro</option>
+                        <option value="Dezembro">Dezembro</option>
                     </select>
                 </div>
                 <div class="form-group"><label>Status</label><input type="text" name="status" placeholder="PAGO / ABERTO"></div>
