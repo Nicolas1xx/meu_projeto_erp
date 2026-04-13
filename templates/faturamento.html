@@ -2,6 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Faturamento & Finanças | Grupo L&H</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -17,140 +18,175 @@
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { background: var(--bg); display: flex; color: #1e293b; }
+        body { background: var(--bg); display: flex; color: #1e293b; overflow-x: hidden; }
 
-        /* Sidebar */
-        .sidebar { width: var(--sidebar-w); background: var(--white); height: 100vh; position: fixed; padding: 30px 20px; box-shadow: 4px 0 10px rgba(0,0,0,0.03); }
+        /* Sidebar Customizada e Padronizada */
+        .sidebar { width: var(--sidebar-w); background: var(--white); height: 100vh; position: fixed; padding: 30px 20px; box-shadow: 4px 0 10px rgba(0,0,0,0.03); z-index: 100; display: flex; flex-direction: column; }
         .sidebar-brand { font-size: 1.5rem; font-weight: 800; color: var(--primary); margin-bottom: 40px; text-align: center; }
-        .nav-item { display: flex; align-items: center; padding: 12px 15px; color: #64748b; text-decoration: none; border-radius: 10px; margin-bottom: 5px; transition: 0.2s; }
+        .nav-item { display: flex; align-items: center; padding: 12px 15px; color: #64748b; text-decoration: none; border-radius: 10px; margin-bottom: 5px; transition: 0.2s; font-size: 0.95rem; font-weight: 600; }
         .nav-item:hover, .nav-item.active { background: var(--primary); color: white; }
-        .nav-item i { margin-right: 12px; width: 20px; }
+        .nav-item i { margin-right: 12px; width: 20px; font-size: 1.1rem; }
+        .logout-btn { margin-top: auto; color: var(--danger); }
+        .logout-btn:hover { background: #fee2e2; color: var(--danger); }
 
-        /* Main Content */
+        /* Área Principal */
         .main { margin-left: var(--sidebar-w); flex: 1; padding: 40px; max-width: calc(100% - var(--sidebar-w)); }
         
-        .header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 30px; }
-        .company-badge { background: var(--primary); color: white; padding: 8px 18px; border-radius: 30px; font-weight: 700; font-size: 0.85rem; }
+        .header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 30px; flex-wrap: wrap; gap: 20px; }
+        .company-badge { background: var(--primary); color: white; padding: 8px 18px; border-radius: 30px; font-weight: 700; font-size: 0.85rem; display: inline-block; }
+
+        /* Alertas (Flash Messages) */
+        .alert { padding: 15px; border-radius: 10px; margin-bottom: 25px; font-weight: 600; font-size: 0.9rem; display: flex; align-items: center; gap: 10px; }
+        .alert-success { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+        .alert-danger { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
 
         /* Tabs de Navegação Interna */
-        .finance-tabs { display: flex; gap: 15px; margin-bottom: 25px; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; }
-        .tab-link { color: #64748b; font-weight: 600; cursor: pointer; padding: 10px 15px; transition: 0.3s; position: relative; }
+        .finance-tabs { display: flex; gap: 15px; margin-bottom: 25px; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; overflow-x: auto; }
+        .tab-link { color: #64748b; font-weight: 700; cursor: pointer; padding: 10px 15px; transition: 0.3s; position: relative; white-space: nowrap; font-size: 0.95rem; text-decoration: none; }
+        .tab-link:hover { color: var(--secondary); }
         .tab-link.active { color: var(--primary); }
         .tab-link.active::after { content: ''; position: absolute; bottom: -12px; left: 0; width: 100%; height: 3px; background: var(--primary); border-radius: 3px; }
 
         /* Grid de Lançamento */
         .card { background: white; border-radius: 16px; padding: 30px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); margin-bottom: 30px; }
-        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+        .card-title { font-size: 1.2rem; color: var(--secondary); font-weight: 800; margin-bottom: 20px; }
         
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
         .field { display: flex; flex-direction: column; gap: 8px; }
-        label { font-size: 0.85rem; font-weight: 700; color: #475569; }
-        input, select, textarea { padding: 12px; border: 1.5px solid #e2e8f0; border-radius: 10px; font-size: 0.95rem; outline: none; transition: 0.3s; }
-        input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(0, 80, 158, 0.1); }
+        .field label { font-size: 0.85rem; font-weight: 700; color: #475569; }
+        .field input, .field select, .field textarea { padding: 12px; border: 1.5px solid #cbd5e1; border-radius: 10px; font-size: 0.95rem; outline: none; transition: 0.3s; background: var(--white); }
+        .field input:focus, .field select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(0, 80, 158, 0.1); }
+        .field.full { grid-column: 1 / -1; }
 
         /* Área de Upload Amigável */
         .drop-zone { 
-            border: 2px dashed #cbd5e1; border-radius: 12px; padding: 25px; 
-            text-align: center; background: #f1f5f9; cursor: pointer; transition: 0.3s;
+            border: 2px dashed #cbd5e1; border-radius: 12px; padding: 30px; 
+            text-align: center; background: #f8fafc; cursor: pointer; transition: 0.3s;
             margin-top: 15px; color: #64748b;
         }
-        .drop-zone:hover { border-color: var(--primary); background: #f0f7ff; color: var(--primary); }
-        .drop-zone i { font-size: 1.8rem; margin-bottom: 10px; }
+        .drop-zone:hover, .drop-zone.dragover { border-color: var(--primary); background: #eff6ff; color: var(--primary); }
+        .drop-zone i { font-size: 2rem; margin-bottom: 15px; color: var(--primary); }
 
         /* Botões */
-        .btn-group { display: flex; justify-content: flex-end; margin-top: 25px; }
-        .btn-save { background: var(--primary); color: white; border: none; padding: 14px 35px; border-radius: 10px; font-weight: 700; cursor: pointer; transition: 0.2s; }
-        .btn-save:hover { background: var(--secondary); transform: translateY(-2px); }
+        .btn-group { display: flex; justify-content: flex-end; margin-top: 25px; gap: 15px; }
+        .btn-save { background: var(--primary); color: white; border: none; padding: 14px 30px; border-radius: 10px; font-weight: 700; cursor: pointer; transition: 0.2s; font-size: 0.95rem; display: flex; align-items: center; gap: 8px; }
+        .btn-save:hover { background: var(--secondary); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,51,102,0.2); }
+        .btn-outline { background: white; color: #475569; border: 1px solid #cbd5e1; }
+        .btn-outline:hover { background: #f1f5f9; transform: none; box-shadow: none; }
 
         /* Lista de Pagamentos Agendados */
-        .scheduled-payments h3 { margin-bottom: 20px; font-size: 1.1rem; }
+        .scheduled-payments h3 { margin-bottom: 20px; font-size: 1.2rem; color: var(--secondary); font-weight: 800; }
         .payment-item { 
             display: flex; align-items: center; justify-content: space-between; 
-            padding: 15px; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 10px;
-            background: white; transition: 0.2s;
+            padding: 20px; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 15px;
+            background: white; transition: 0.2s; flex-wrap: wrap; gap: 15px;
         }
-        .payment-item:hover { border-color: var(--primary); }
-        .payment-item.urgent { border-left: 5px solid var(--danger); background: #fef2f2; }
+        .payment-item:hover { border-color: var(--primary); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+        .payment-item.urgent { border-left: 5px solid var(--danger); background: #fef2f2; border-color: #fecaca; }
         
-        .info-group { display: flex; align-items: center; gap: 15px; }
-        .icon-box { width: 45px; height: 45px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
+        .info-group { display: flex; align-items: center; gap: 15px; flex: 1; min-width: 250px; }
+        .icon-box { width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; flex-shrink: 0; }
         
-        .value-tag { font-weight: 800; color: var(--secondary); font-size: 1rem; }
+        .payment-details { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+        .value-tag { font-weight: 800; color: var(--secondary); font-size: 1.1rem; min-width: 120px; text-align: right; }
+
+        /* Responsividade */
+        @media (max-width: 992px) {
+            .sidebar { transform: translateX(-100%); transition: 0.3s; }
+            .main { margin-left: 0; max-width: 100%; padding: 20px; }
+            .payment-item { flex-direction: column; align-items: flex-start; }
+            .payment-details { width: 100%; justify-content: space-between; }
+            .value-tag { text-align: left; }
+        }
     </style>
 </head>
 <body>
 
     <nav class="sidebar">
         <div class="sidebar-brand">GRUPO L&H</div>
-        <a href="/dashboard" class="nav-item"><i class="fas fa-th-large"></i> Visão Geral</a>
-        <a href="/faturamento" class="nav-item active"><i class="fas fa-file-invoice-dollar"></i> Faturamento</a>
+        <a href="/dashboard" class="nav-item"><i class="fas fa-chart-line"></i> Visão Geral</a>
+        <a href="/faturamento" class="nav-item active"><i class="fas fa-arrow-down"></i> Contas a Pagar</a>
+        <a href="/receber" class="nav-item"><i class="fas fa-arrow-up"></i> Contas a Receber</a>
         <a href="/rh" class="nav-item"><i class="fas fa-user-friends"></i> RH Corporativo</a>
         <a href="/contratos" class="nav-item"><i class="fas fa-file-signature"></i> Contratos</a>
-        <a href="/logout" class="nav-item" style="margin-top: 100px; color: var(--danger);"><i class="fas fa-sign-out-alt"></i> Sair</a>
+        <a href="/logout" class="nav-item logout-btn"><i class="fas fa-sign-out-alt"></i> Sair</a>
     </nav>
 
     <main class="main">
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        <i class="fas fa-info-circle"></i> {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
         <div class="header">
             <div>
-                <h1 style="font-size: 1.8rem; font-weight: 800;">Faturamento & Contas</h1>
-                <p style="color: #64748b;">Gerencie entradas e saídas do Grupo com precisão.</p>
+                <h1 style="font-size: 1.8rem; font-weight: 800; color: var(--secondary);">Faturamento & Contas a Pagar</h1>
+                <p style="color: #64748b; margin-top: 5px;">Gerencie obrigações e saídas com precisão.</p>
             </div>
-            <div class="company-badge">{{ empresa }}</div>
+            <div class="company-badge"><i class="fas fa-building"></i> {{ empresa | default('Grupo L&H') }}</div>
         </div>
 
         <div class="finance-tabs">
-            <div class="tab-link active">Contas a Pagar</div>
-            <div class="tab-link">Contas a Receber</div>
-            <div class="tab-link">Relatórios Fiscais</div>
+            <a href="#" class="tab-link active">Contas a Pagar</a>
+            <a href="/receber" class="tab-link">Contas a Receber</a>
+            <a href="#" class="tab-link">Relatórios Fiscais</a>
         </div>
 
         <div class="card">
-            <h3 style="margin-bottom: 20px;">Lançar Novo Documento</h3>
-            <form action="/upload" method="POST" enctype="multipart/form-data">
+            <h3 class="card-title">Lançar Nova Despesa</h3>
+            <form action="/upload_despesa" method="POST" enctype="multipart/form-data">
                 <div class="form-grid">
                     <div class="field">
-                        <label>Categoria / Layout</label>
-                        <select required>
+                        <label>Categoria / Centro de Custo</label>
+                        <select name="categoria" required>
                             <option value="">Selecione...</option>
                             <optgroup label="Infraestrutura">
-                                <option>Energia (Enel/CPFL)</option>
-                                <option>Água e Saneamento</option>
-                                <option>Aluguéis de Sedes</option>
+                                <option value="energia">Energia (Enel/CPFL)</option>
+                                <option value="agua">Água e Saneamento</option>
+                                <option value="aluguel">Aluguéis de Sedes</option>
                             </optgroup>
                             <optgroup label="Operacional Saúde">
-                                <option>Insumos Médicos</option>
-                                <option>Manutenção de Equipamentos</option>
-                                <option>Lavanderia Hospitalar</option>
+                                <option value="insumos">Insumos Médicos</option>
+                                <option value="manutencao">Manutenção de Equipamentos</option>
+                                <option value="lavanderia">Lavanderia Hospitalar</option>
                             </optgroup>
                             <optgroup label="Impostos e Taxas">
-                                <option>Simples Nacional</option>
-                                <option>ISS / ISSQN</option>
-                                <option>Taxas Municipais</option>
+                                <option value="simples">Simples Nacional</option>
+                                <option value="iss">ISS / ISSQN</option>
+                                <option value="taxas">Taxas Municipais</option>
                             </optgroup>
                         </select>
                     </div>
                     <div class="field">
-                        <label>Vencimento</label>
-                        <input type="date" required>
+                        <label>Data de Vencimento</label>
+                        <input type="date" name="vencimento" required>
                     </div>
                     <div class="field">
                         <label>Valor do Documento</label>
-                        <input type="text" id="moeda" placeholder="R$ 0,00" required>
+                        <input type="text" id="moeda" name="valor" class="mask-money" placeholder="R$ 0,00" required>
                     </div>
                 </div>
 
-                <div class="field" style="margin-top: 20px;">
+                <div class="field full" style="margin-top: 20px;">
                     <label>Código de Barras / Chave PIX</label>
-                    <input type="text" placeholder="Cole a linha digitável aqui para agilizar o pagamento">
+                    <input type="text" name="codigo_barras" placeholder="Cole a linha digitável ou chave PIX aqui para agilizar o pagamento">
                 </div>
 
-                <div class="drop-zone" onclick="document.getElementById('file-input').click()">
+                <div class="drop-zone" id="dropZone" onclick="document.getElementById('file-input').click()">
                     <i class="fas fa-cloud-upload-alt"></i>
-                    <p><strong>Clique para anexar o PDF</strong> ou arraste o arquivo aqui</p>
-                    <input type="file" id="file-input" name="arquivo" hidden>
+                    <p id="dropZoneText"><strong>Clique para anexar o Boleto/NF (PDF)</strong> ou arraste o arquivo aqui</p>
+                    <input type="file" id="file-input" name="arquivo" accept=".pdf,image/*" hidden>
                 </div>
 
                 <div class="btn-group">
-                    <button type="submit" class="btn-save">Registrar Despesa</button>
+                    <button type="reset" class="btn-save btn-outline" onclick="resetFileText()">Limpar</button>
+                    <button type="submit" class="btn-save"><i class="fas fa-check"></i> Registrar Despesa</button>
                 </div>
             </form>
         </div>
@@ -164,12 +200,15 @@
                         <i class="fas fa-exclamation-triangle"></i>
                     </div>
                     <div>
-                        <strong>Aluguel Sede Itapeva</strong><br>
-                        <small style="color: var(--danger); font-weight: bold;">VENCE HOJE</small>
+                        <strong style="font-size: 1.05rem;">Aluguel Sede Itapeva</strong><br>
+                        <small style="color: var(--danger); font-weight: 800;">VENCE HOJE</small>
                     </div>
                 </div>
-                <div class="value-tag">R$ 5.400,00</div>
-                <button class="btn-save" style="padding: 8px 15px; font-size: 0.8rem; background: var(--secondary);">Ver PDF</button>
+                <div class="payment-details">
+                    <div class="value-tag">R$ 5.400,00</div>
+                    <button class="btn-save btn-outline" style="padding: 8px 15px; font-size: 0.85rem;"><i class="fas fa-file-pdf"></i> Ver Boleto</button>
+                    <button class="btn-save" style="padding: 8px 15px; font-size: 0.85rem; background: var(--success);"><i class="fas fa-check-double"></i> Dar Baixa</button>
+                </div>
             </div>
 
             <div class="payment-item">
@@ -178,27 +217,77 @@
                         <i class="fas fa-bolt"></i>
                     </div>
                     <div>
-                        <strong>Conta de Luz - Health Max</strong><br>
-                        <small style="color: #64748b;">Vence em 4 dias</small>
+                        <strong style="font-size: 1.05rem;">Conta de Luz - Health Max</strong><br>
+                        <small style="color: #64748b; font-weight: 600;">Vence em 4 dias (17/04/2026)</small>
                     </div>
                 </div>
-                <div class="value-tag">R$ 1.250,40</div>
-                <button class="btn-save" style="padding: 8px 15px; font-size: 0.8rem; background: var(--secondary);">Ver PDF</button>
+                <div class="payment-details">
+                    <div class="value-tag">R$ 1.250,40</div>
+                    <button class="btn-save btn-outline" style="padding: 8px 15px; font-size: 0.85rem;"><i class="fas fa-file-pdf"></i> Ver Conta</button>
+                    <button class="btn-save" style="padding: 8px 15px; font-size: 0.85rem; background: var(--success);"><i class="fas fa-check-double"></i> Dar Baixa</button>
+                </div>
             </div>
         </div>
     </main>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-masker/1.2.0/vanilla-masker.min.js"></script>
     <script>
-        // Máscara de Moeda R$
-        const inputMoeda = document.getElementById('moeda');
-        inputMoeda.addEventListener('input', function(e) {
-            let v = e.target.value.replace(/\D/g, '');
-            v = (v / 100).toFixed(2) + '';
-            v = v.replace(".", ",");
-            v = v.replace(/(\d)(\d{3})(\d{3}),/g, "$1.$2.$3,");
-            v = v.replace(/(\d)(\d{3}),/g, "$1.$2,");
-            e.target.value = "R$ " + v;
+        // Máscara de Moeda (Substituído pelo VanillaMasker para consistência com outras páginas)
+        document.addEventListener('DOMContentLoaded', function() {
+            VMasker(document.querySelectorAll('.mask-money')).maskMoney({
+                precision: 2,
+                separator: ',',
+                delimiter: '.',
+                unit: 'R$',
+                zeroCents: false
+            });
         });
+
+        // Interação de Upload de Arquivo
+        const fileInput = document.getElementById('file-input');
+        const dropZoneText = document.getElementById('dropZoneText');
+        const dropZone = document.getElementById('dropZone');
+
+        fileInput.addEventListener('change', function() {
+            if(this.files && this.files.length > 0) {
+                dropZoneText.innerHTML = `<span style="color: var(--primary); font-weight: 800;"><i class="fas fa-check-circle"></i> Arquivo pronto:</span> ${this.files[0].name}`;
+                dropZone.style.borderColor = 'var(--success)';
+                dropZone.style.background = '#f0fdf4';
+            }
+        });
+
+        function resetFileText() {
+            dropZoneText.innerHTML = `<strong>Clique para anexar o Boleto/NF (PDF)</strong> ou arraste o arquivo aqui`;
+            dropZone.style.borderColor = '#cbd5e1';
+            dropZone.style.background = '#f8fafc';
+        }
+
+        // Drag and Drop Effects
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropZone.addEventListener(eventName, () => dropZone.classList.add('dragover'), false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, () => dropZone.classList.remove('dragover'), false);
+        });
+
+        dropZone.addEventListener('drop', handleDrop, false);
+
+        function handleDrop(e) {
+            let dt = e.dataTransfer;
+            let files = dt.files;
+            fileInput.files = files;
+            fileInput.dispatchEvent(new Event('change'));
+        }
     </script>
 </body>
 </html>

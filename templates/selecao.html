@@ -5,14 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portão de Entrada | Grupo L&H</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary: #00509e;
             --secondary: #003366;
             --success: #10b981;
-            --bg: #0f172a; /* Fundo escuro para destacar os cards */
+            --danger: #ef4444;
+            --bg: #0f172a;
             --glass: rgba(255, 255, 255, 0.03);
+            --glass-hover: rgba(255, 255, 255, 0.08);
             --glass-border: rgba(255, 255, 255, 0.1);
+            --text-muted: #94a3b8;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
@@ -20,50 +24,81 @@
         body {
             background: var(--bg);
             background-image: 
-                radial-gradient(at 0% 0%, rgba(0, 80, 158, 0.15) 0px, transparent 50%),
-                radial-gradient(at 100% 100%, rgba(0, 51, 102, 0.2) 0px, transparent 50%);
-            height: 100vh;
+                radial-gradient(at 0% 0%, rgba(0, 80, 158, 0.2) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(0, 51, 102, 0.3) 0px, transparent 50%);
+            min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            overflow: hidden;
+            overflow-x: hidden;
+            padding: 20px;
         }
 
         .container {
             width: 100%;
-            max-width: 1000px;
+            max-width: 1100px;
             padding: 20px;
             text-align: center;
-            animation: fadeIn 1s ease-out;
+            animation: fadeIn 0.8s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .header-box { margin-bottom: 50px; }
-        .header-box h1 { font-size: 2.5rem; font-weight: 900; letter-spacing: -1px; margin-bottom: 10px; }
-        .header-box p { color: #94a3b8; font-size: 1.1rem; }
+        /* Alertas (Flash Messages) - Estilo Glassmorphism */
+        .alert-container { margin-bottom: 25px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+        .alert {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 12px 25px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid var(--glass-border);
+            animation: slideDown 0.4s ease-out;
+        }
+        .alert-danger { border-left: 4px solid var(--danger); color: #fecaca; }
+        .alert-success { border-left: 4px solid var(--success); color: #dcfce7; }
 
-        /* Barra de Busca de Unidades */
+        .header-box { margin-bottom: 40px; }
+        .header-box h1 { font-size: 2.8rem; font-weight: 900; letter-spacing: -1.5px; margin-bottom: 10px; text-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        .header-box p { color: var(--text-muted); font-size: 1.15rem; font-weight: 400; }
+
+        /* Barra de Busca */
         .search-unidade {
-            max-width: 400px;
-            margin: 0 auto 40px;
+            max-width: 450px;
+            margin: 0 auto 50px;
             position: relative;
         }
         .search-unidade input {
             width: 100%;
-            padding: 15px 20px 15px 50px;
+            padding: 16px 20px 16px 55px;
             background: var(--glass);
             border: 1px solid var(--glass-border);
-            border-radius: 15px;
+            border-radius: 18px;
             color: white;
+            font-size: 1rem;
             outline: none;
             backdrop-filter: blur(10px);
+            transition: 0.3s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
-        .search-unidade i { position: absolute; left: 20px; top: 18px; color: #64748b; }
+        .search-unidade input::placeholder { color: #64748b; }
+        .search-unidade input:focus {
+            border-color: var(--primary);
+            background: rgba(255, 255, 255, 0.06);
+            box-shadow: 0 0 0 4px rgba(0, 80, 158, 0.2);
+        }
+        .search-unidade i { position: absolute; left: 22px; top: 18px; color: var(--text-muted); font-size: 1.1rem; transition: 0.3s; }
+        .search-unidade input:focus + i { color: var(--primary); }
 
+        /* Grid de Cartões */
         .grid-selection {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 25px;
+            justify-content: center;
         }
 
         .unit-card {
@@ -77,87 +112,138 @@
             backdrop-filter: blur(15px);
             position: relative;
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         .unit-card::before {
             content: '';
             position: absolute;
-            top: 0; left: 0; width: 100%; height: 4px;
+            top: 0; left: 0; width: 100%; height: 5px;
             background: linear-gradient(90deg, transparent, var(--primary), transparent);
             transform: translateX(-100%);
-            transition: 0.6s;
+            transition: 0.6s ease-in-out;
+            opacity: 0.8;
         }
 
         .unit-card:hover::before { transform: translateX(100%); }
 
         .unit-card:hover {
-            transform: translateY(-10px);
-            background: rgba(255, 255, 255, 0.07);
-            border-color: var(--primary);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            transform: translateY(-8px) scale(1.02);
+            background: var(--glass-hover);
+            border-color: rgba(0, 80, 158, 0.4);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4), 0 0 20px rgba(0, 80, 158, 0.2);
         }
 
         .icon-circle {
-            width: 80px; height: 80px;
-            background: rgba(0, 80, 158, 0.2);
-            border-radius: 20px;
+            width: 85px; height: 85px;
+            background: rgba(0, 80, 158, 0.15);
+            border-radius: 22px;
             display: flex; align-items: center; justify-content: center;
             margin: 0 auto 25px;
-            font-size: 2rem;
+            font-size: 2.5rem;
             color: var(--primary);
-            transition: 0.4s;
+            transition: 0.5s;
+            box-shadow: inset 0 0 15px rgba(0, 80, 158, 0.1);
         }
 
         .unit-card:hover .icon-circle {
             background: var(--primary);
             color: white;
-            transform: rotateY(180deg);
+            transform: rotateY(180deg) scale(1.1);
+            box-shadow: 0 10px 25px rgba(0, 80, 158, 0.4);
         }
 
-        .unit-info h2 { font-size: 1.6rem; margin-bottom: 5px; }
-        .unit-info span { color: #94a3b8; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; }
+        .unit-info h2 { font-size: 1.6rem; margin-bottom: 8px; font-weight: 800; }
+        .unit-info span { color: var(--text-muted); font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; }
 
         .status-badge {
-            margin-top: 20px;
-            display: inline-block;
-            padding: 5px 12px;
+            margin-top: 25px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
             border-radius: 20px;
-            font-size: 0.7rem;
+            font-size: 0.75rem;
             font-weight: 800;
             background: rgba(16, 185, 129, 0.1);
             color: var(--success);
             border: 1px solid rgba(16, 185, 129, 0.2);
+            letter-spacing: 0.5px;
         }
+
+        .status-dot { width: 6px; height: 6px; background: var(--success); border-radius: 50%; box-shadow: 0 0 5px var(--success); animation: pulse 2s infinite; }
 
         .last-access {
             position: absolute;
-            top: 15px; right: 15px;
-            font-size: 0.6rem;
-            background: var(--primary);
-            padding: 4px 8px;
-            border-radius: 6px;
-            opacity: 0.8;
+            top: 20px; right: 20px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            background: rgba(0, 80, 158, 0.8);
+            padding: 5px 10px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .footer-info {
+            margin-top: 70px;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            line-height: 1.6;
+            background: var(--glass);
+            padding: 15px 30px;
+            border-radius: 20px;
+            display: inline-block;
+            border: 1px solid var(--glass-border);
+        }
+
+        /* Animações */
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); filter: blur(5px); } to { opacity: 1; transform: translateY(0); filter: blur(0); } }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); } }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .header-box h1 { font-size: 2rem; }
+            .grid-selection { grid-template-columns: 1fr; max-width: 400px; margin: 0 auto; }
+            .unit-card { padding: 30px 20px; }
+        }
     </style>
 </head>
 <body>
 
     <div class="container">
+        
+        <div class="alert-container">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+              {% if messages %}
+                {% for category, message in messages %}
+                  <div class="alert alert-{{ category }}">
+                    <i class="fas fa-{{ 'exclamation-circle' if category == 'danger' else 'check-circle' }}"></i> 
+                    {{ message }}
+                  </div>
+                {% endfor %}
+              {% endif %}
+            {% endwith %}
+        </div>
+
         <header class="header-box">
             <h1>Grupo Econômico L&H</h1>
             <p>Selecione o ecossistema que deseja gerenciar hoje</p>
         </header>
 
         <div class="search-unidade">
+            <input type="text" id="searchUnidade" onkeyup="filterCards()" placeholder="Procurar unidade ou área...">
             <i class="fas fa-search"></i>
-            <input type="text" placeholder="Procurar unidade ou CNPJ...">
         </div>
 
-        <div class="grid-selection">
+        <div class="grid-selection" id="cardContainer">
             
-            <a href="/set_empresa/leao" class="unit-card">
+            <a href="/set_empresa/leao" class="unit-card" data-name="leao servicos administrativo terceirizacao">
                 <div class="last-access"><i class="fas fa-history"></i> ÚLTIMO ACESSO</div>
                 <div class="icon-circle">
                     <i class="fas fa-shield-halved"></i>
@@ -166,10 +252,10 @@
                     <h2>Leão Serviços</h2>
                     <span>Administrativo & Terceirização</span>
                 </div>
-                <div class="status-badge">OPERACIONAL</div>
+                <div class="status-badge"><span class="status-dot"></span> OPERACIONAL</div>
             </a>
 
-            <a href="/set_empresa/health" class="unit-card">
+            <a href="/set_empresa/health" class="unit-card" data-name="health max gestao saude plantoes">
                 <div class="icon-circle">
                     <i class="fas fa-heart-pulse"></i>
                 </div>
@@ -177,16 +263,43 @@
                     <h2>Health Max</h2>
                     <span>Gestão de Saúde & Plantões</span>
                 </div>
-                <div class="status-badge">OPERACIONAL</div>
+                <div class="status-badge"><span class="status-dot"></span> OPERACIONAL</div>
             </a>
 
-        </div>
+            </div>
 
-        <footer style="margin-top: 60px; color: #475569; font-size: 0.8rem;">
-            Autenticado como: <strong>Nicolas Ricardo K. L. Silva</strong><br>
-            Sessão segura via SSL 256-bit
+        <footer class="footer-info">
+            <i class="fas fa-user-shield" style="color: var(--primary); margin-right: 5px;"></i>
+            Autenticado como: <strong style="color: white;">{{ current_user.nome | default('Colaborador(a)') }}</strong><br>
+            <span style="font-size: 0.75rem; opacity: 0.7;"><i class="fas fa-lock"></i> Sessão segura via criptografia ponta-a-ponta</span>
         </footer>
     </div>
 
+    <script>
+        // Função de filtro visual para os cards de seleção
+        function filterCards() {
+            let input = document.getElementById('searchUnidade');
+            let filter = input.value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, ""); // Remove acentos
+            let container = document.getElementById('cardContainer');
+            let cards = container.getElementsByClassName('unit-card');
+
+            for (let i = 0; i < cards.length; i++) {
+                let dataName = cards[i].getAttribute('data-name');
+                if (dataName) {
+                    if (dataName.toLowerCase().indexOf(filter) > -1) {
+                        cards[i].style.display = "";
+                        cards[i].style.animation = "fadeIn 0.5s ease"; // Re-aplica animação suave ao aparecer
+                    } else {
+                        cards[i].style.display = "none";
+                    }
+                }
+            }
+        }
+
+        // Foca automaticamente no campo de busca ao carregar a página
+        window.onload = function() {
+            document.getElementById('searchUnidade').focus();
+        };
+    </script>
 </body>
 </html>

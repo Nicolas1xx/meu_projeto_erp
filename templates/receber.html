@@ -21,55 +21,89 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
         body { background: var(--bg); display: flex; color: #1e293b; overflow-x: hidden; }
 
-        /* Sidebar */
-        .sidebar { width: var(--sidebar-w); background: var(--white); height: 100vh; position: fixed; padding: 30px 20px; box-shadow: 4px 0 10px rgba(0,0,0,0.03); z-index: 100; }
+        /* Sidebar Padronizada */
+        .sidebar { width: var(--sidebar-w); background: var(--white); height: 100vh; position: fixed; padding: 30px 20px; box-shadow: 4px 0 10px rgba(0,0,0,0.03); z-index: 100; display: flex; flex-direction: column; }
         .sidebar-brand { font-size: 1.5rem; font-weight: 800; color: var(--primary); margin-bottom: 40px; text-align: center; }
-        .nav-item { display: flex; align-items: center; padding: 12px 15px; color: #64748b; text-decoration: none; border-radius: 10px; margin-bottom: 5px; transition: 0.2s; font-size: 0.9rem; font-weight: 600; }
+        .nav-item { display: flex; align-items: center; padding: 12px 15px; color: #64748b; text-decoration: none; border-radius: 10px; margin-bottom: 5px; transition: 0.2s; font-size: 0.95rem; font-weight: 600; }
         .nav-item:hover, .nav-item.active { background: var(--primary); color: white; }
         .nav-item i { margin-right: 12px; width: 20px; font-size: 1.1rem; }
+        .logout-btn { margin-top: auto; color: var(--danger); }
+        .logout-btn:hover { background: #fee2e2; color: var(--danger); }
 
         /* Main Content */
         .main { margin-left: var(--sidebar-w); flex: 1; padding: 40px; max-width: calc(100% - var(--sidebar-w)); }
         
+        .header-title { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 25px; flex-wrap: wrap; gap: 15px; }
+        .company-badge { background: var(--primary); color: white; padding: 6px 15px; border-radius: 20px; font-weight: 700; font-size: 0.85rem; }
+
+        /* Alertas (Flash) */
+        .alert { padding: 15px; border-radius: 10px; margin-bottom: 25px; font-weight: 600; font-size: 0.9rem; display: flex; align-items: center; gap: 10px; }
+        .alert-success { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+        .alert-danger { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+
         /* Dashboard Cards */
-        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 30px; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 30px; }
         .stat-card { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); border-left: 5px solid var(--primary); }
-        .stat-card h3 { font-size: 0.7rem; color: #64748b; text-transform: uppercase; margin-bottom: 8px; letter-spacing: 1px; }
-        .stat-card .value { font-size: 1.25rem; font-weight: 800; color: var(--secondary); }
+        .stat-card h3 { font-size: 0.75rem; color: #64748b; text-transform: uppercase; margin-bottom: 8px; font-weight: 700; }
+        .stat-card .value { font-size: 1.4rem; font-weight: 800; color: var(--secondary); }
 
         /* Filtro de Meses */
-        .month-filter { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 25px; background: white; padding: 15px; border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
-        .btn-month { padding: 8px 15px; border-radius: 20px; text-decoration: none; font-size: 0.75rem; font-weight: 700; color: #64748b; background: #f1f5f9; transition: 0.2s; }
-        .btn-month.active { background: var(--primary); color: white; }
+        .month-filter { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 25px; background: white; padding: 15px; border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .btn-month { padding: 8px 16px; border-radius: 20px; text-decoration: none; font-size: 0.8rem; font-weight: 700; color: #64748b; background: #f8fafc; border: 1px solid #e2e8f0; transition: 0.2s; }
+        .btn-month:hover { background: #e2e8f0; }
+        .btn-month.active { background: var(--primary); color: white; border-color: var(--primary); box-shadow: 0 2px 5px rgba(0,80,158,0.3); }
 
-        /* Tabela Estilo Excel */
-        .card { background: white; border-radius: 16px; padding: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-        .table-toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; gap: 15px; }
-        .table-responsive { overflow-x: auto; border-radius: 8px; border: 1px solid #e2e8f0; max-height: 600px; }
+        /* Card e Tabela */
+        .card { background: white; border-radius: 16px; padding: 25px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .table-toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; gap: 15px; flex-wrap: wrap; }
+        .search-box { position: relative; width: 100%; max-width: 350px; }
+        .search-box i { position: absolute; left: 15px; top: 12px; color: #94a3b8; }
+        .search-box input { width: 100%; padding: 10px 15px 10px 40px; border: 1px solid #cbd5e1; border-radius: 8px; outline: none; transition: 0.3s; font-size: 0.9rem; }
+        .search-box input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(0,80,158,0.1); }
         
-        .table-excel { width: 100%; border-collapse: collapse; min-width: 2500px; font-size: 0.75rem; }
-        .table-excel th { background: var(--secondary); color: white; padding: 12px; text-align: left; position: sticky; top: 0; z-index: 5; white-space: nowrap; border: 1px solid #002244; }
-        .table-excel td { padding: 10px; border: 1px solid #e2e8f0; white-space: nowrap; color: #334155; }
+        .table-responsive { overflow-x: auto; border-radius: 8px; border: 1px solid #e2e8f0; max-height: 60vh; }
+        .table-excel { width: 100%; border-collapse: collapse; min-width: 2000px; font-size: 0.8rem; }
+        .table-excel th { background: #f8fafc; color: #475569; padding: 15px; text-align: left; position: sticky; top: 0; z-index: 5; white-space: nowrap; border-bottom: 2px solid #e2e8f0; text-transform: uppercase; font-size: 0.75rem; font-weight: 800; }
+        .table-excel td { padding: 12px 15px; border-bottom: 1px solid #f1f5f9; white-space: nowrap; color: #334155; vertical-align: middle; }
         .table-excel tr:hover { background: #f8fafc; }
 
         /* Badges */
-        .status-badge { font-weight: 800; text-transform: uppercase; font-size: 0.65rem; padding: 4px 8px; border-radius: 4px; }
-        .status-pago { background: #d1fae5; color: #065f46; }
+        .status-badge { font-weight: 800; text-transform: uppercase; font-size: 0.7rem; padding: 6px 10px; border-radius: 6px; letter-spacing: 0.5px; }
+        .status-pago { background: #dcfce7; color: #166534; }
         .status-aberto { background: #fee2e2; color: #991b1b; }
 
         /* Botões */
-        .btn-add { background: var(--primary); color: white; border: none; padding: 10px 18px; border-radius: 8px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 0.85rem; text-decoration: none; }
-        .btn-delete { color: var(--danger); transition: 0.2s; cursor: pointer; border: none; background: none; font-size: 1.1rem; }
-        .btn-delete:hover { transform: scale(1.2); }
+        .btn-group { display: flex; gap: 10px; }
+        .btn-add { background: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 0.9rem; text-decoration: none; transition: 0.2s; }
+        .btn-add:hover { background: var(--secondary); transform: translateY(-2px); }
+        .btn-import { background: var(--success); }
+        .btn-import:hover { background: #059669; }
+        
+        .btn-delete { color: #94a3b8; transition: 0.2s; cursor: pointer; border: none; background: none; font-size: 1.1rem; padding: 5px; }
+        .btn-delete:hover { color: var(--danger); transform: scale(1.1); }
 
         /* Modal */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; justify-content: center; align-items: center; }
-        .modal-content { background: white; padding: 30px; border-radius: 15px; width: 900px; max-height: 90vh; overflow-y: auto; }
-        .form-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; }
-        .form-group { display: flex; flex-direction: column; gap: 4px; }
-        .form-group label { font-size: 0.65rem; font-weight: 800; color: #475569; text-transform: uppercase; }
-        .form-group input, .form-group select { padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; outline: none; font-size: 0.85rem; }
-        .form-group input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(0,80,158,0.1); }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.6); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(4px); }
+        .modal-content { background: white; padding: 30px; border-radius: 20px; width: 100%; max-width: 900px; max-height: 90vh; overflow-y: auto; margin: 20px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); animation: slideUp 0.3s ease; }
+        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
+        .form-group { display: flex; flex-direction: column; gap: 6px; }
+        .form-group label { font-size: 0.8rem; font-weight: 800; color: #475569; }
+        .form-group input, .form-group select { padding: 12px; border: 1px solid #cbd5e1; border-radius: 10px; outline: none; font-size: 0.9rem; transition: 0.3s; background: var(--white); }
+        .form-group input:focus, .form-group select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(0,80,158,0.1); }
+        .full-width { grid-column: 1 / -1; }
+
+        /* Empty State */
+        .empty-state { text-align: center; padding: 40px; color: #64748b; }
+        .empty-state i { font-size: 3rem; color: #cbd5e1; margin-bottom: 15px; }
+
+        /* Responsividade */
+        @media (max-width: 992px) {
+            .sidebar { transform: translateX(-100%); transition: 0.3s; }
+            .main { margin-left: 0; max-width: 100%; padding: 20px; }
+            .form-grid { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
@@ -78,33 +112,44 @@
         <div class="sidebar-brand">GRUPO L&H</div>
         <a href="/dashboard" class="nav-item"><i class="fas fa-chart-line"></i> Dashboard</a>
         <a href="/receber" class="nav-item active"><i class="fas fa-arrow-up"></i> Contas a Receber</a>
-        <a href="/logout" class="nav-item" style="margin-top: 50px; color: var(--danger);"><i class="fas fa-sign-out-alt"></i> Sair</a>
+        <a href="/logout" class="nav-item logout-btn"><i class="fas fa-sign-out-alt"></i> Sair</a>
     </nav>
 
     <main class="main">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        <i class="fas fa-info-circle"></i> {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <div class="header-title">
             <div>
                 <h1 style="font-weight: 800; font-size: 1.8rem; color: var(--secondary);">Contas a Receber</h1>
-                <p style="color: #64748b;">Gestão financeira: <strong>{{ empresa }}</strong></p>
+                <p style="color: #64748b; margin-top: 5px;">Gestão financeira consolidada</p>
             </div>
+            <div class="company-badge"><i class="fas fa-building"></i> {{ empresa | default('Selecione uma Empresa') }}</div>
         </div>
 
         <div class="stats-grid">
             <div class="stat-card">
                 <h3>Total Bruto (Notas)</h3>
-                <div class="value">R$ {{ "{:,.2f}".format(contas|sum(attribute='valor_nota')) }}</div>
+                <div class="value">R$ {{ "{:,.2f}".format(contas|sum(attribute='valor_nota')) if contas else "0,00" }}</div>
             </div>
             <div class="stat-card" style="border-left-color: var(--success);">
                 <h3>Total Recebido</h3>
-                <div class="value">R$ {{ "{:,.2f}".format(contas|sum(attribute='valor_recebido')) }}</div>
+                <div class="value" style="color: var(--success);">R$ {{ "{:,.2f}".format(contas|sum(attribute='valor_recebido')) if contas else "0,00" }}</div>
             </div>
             <div class="stat-card" style="border-left-color: var(--danger);">
                 <h3>Diferença em Aberto</h3>
-                <div class="value">R$ {{ "{:,.2f}".format(contas|sum(attribute='diferenca')) }}</div>
+                <div class="value" style="color: var(--danger);">R$ {{ "{:,.2f}".format(contas|sum(attribute='diferenca')) if contas else "0,00" }}</div>
             </div>
             <div class="stat-card" style="border-left-color: var(--warning);">
                 <h3>Nº de Lançamentos</h3>
-                <div class="value">{{ contas|length }}</div>
+                <div class="value" style="color: var(--warning);">{{ contas|length if contas else 0 }}</div>
             </div>
         </div>
 
@@ -118,20 +163,23 @@
 
         <div class="card">
             <div class="table-toolbar">
-                <input type="text" id="searchInput" placeholder="Filtrar por NF, Cidade ou Status..." style="padding: 10px; border: 1px solid #e2e8f0; border-radius: 8px; width: 300px;">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInput" placeholder="Filtrar por NF, Cidade ou Status...">
+                </div>
                 
-                <div style="display: flex; gap: 10px;">
-                    <button class="btn-add" style="background: var(--success);" onclick="document.getElementById('excel_file').click()">
+                <div class="btn-group">
+                    <button class="btn-add btn-import" onclick="document.getElementById('excel_file').click()">
                         <i class="fas fa-file-excel"></i> Importar Planilha
                     </button>
                     <button class="btn-add" onclick="openModal()">
-                        <i class="fas fa-plus"></i> Novo Registro
+                        <i class="fas fa-plus"></i> Lançamento Manual
                     </button>
                 </div>
             </div>
 
             <form action="/upload_receber" method="POST" enctype="multipart/form-data" id="formExcel" style="display: none;">
-                <input type="file" name="excel_file" id="excel_file" onchange="this.form.submit()">
+                <input type="file" name="excel_file" id="excel_file" accept=".xls,.xlsx" onchange="document.getElementById('loadingOverlay').style.display='flex'; this.form.submit();">
                 <input type="hidden" name="mes_upload" value="{{ mes_selecionado }}">
             </form>
 
@@ -139,53 +187,67 @@
                 <table class="table-excel" id="contasTable">
                     <thead>
                         <tr>
-                            <th>MES REF</th>
-                            <th>STATUS</th>
-                            <th>CIDADE</th>
-                            <th>SERVIÇO</th>
+                            <th>Mês Ref.</th>
+                            <th>Status</th>
+                            <th>Cidade</th>
+                            <th>Serviço</th>
                             <th>NF</th>
-                            <th>EMPRESA</th>
-                            <th>EMISSÃO</th>
-                            <th>VENCIMENTO</th>
-                            <th>VALOR NOTA</th>
-                            <th>ISS RETIDO</th>
-                            <th>VALOR ISS</th>
+                            <th>Empresa</th>
+                            <th>Emissão</th>
+                            <th>Vencimento</th>
+                            <th>Valor Nota</th>
+                            <th>ISS Retido</th>
+                            <th>Valor ISS</th>
                             <th>%</th>
-                            <th>VALOR IR</th>
-                            <th>VALOR LÍQUIDO</th>
-                            <th>VALOR RECEBIDO</th>
-                            <th>DIFERENÇA</th>
-                            <th>DATA PG</th>
-                            <th style="background: var(--danger); text-align: center; position: sticky; right: 0;">AÇÕES</th>
+                            <th>Valor IR</th>
+                            <th>Valor Líquido</th>
+                            <th>Valor Recebido</th>
+                            <th>Diferença</th>
+                            <th>Data PG</th>
+                            <th>Obs</th>
+                            <th style="text-align: center; position: sticky; right: 0; background: #f8fafc; z-index: 6;">Ações</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {% for conta in contas %}
-                        <tr>
-                            <td style="font-weight: 700;">{{ conta.mes_referencia }}</td>
-                            <td><span class="status-badge {{ 'status-pago' if 'PAGO' in (conta.status|upper if conta.status else '') else 'status-aberto' }}">{{ conta.status }}</span></td>
-                            <td>{{ conta.cidade }}</td>
-                            <td>{{ conta.servico }}</td>
-                            <td>{{ conta.nf }}</td>
-                            <td>{{ conta.empresa_planilha }}</td>
-                            <td>{{ conta.emissao_nota }}</td>
-                            <td>{{ conta.vencimento }}</td>
-                            <td style="font-weight: 700;">R$ {{ "{:,.2f}".format(conta.valor_nota or 0.0) }}</td>
-                            <td>{{ conta.iss_retido }}</td>
-                            <td>R$ {{ "{:,.2f}".format(conta.valor_iss or 0.0) }}</td>
-                            <td>{{ conta.porcentagem }}</td>
-                            <td>R$ {{ "{:,.2f}".format(conta.valor_ir or 0.0) }}</td>
-                            <td>R$ {{ "{:,.2f}".format(conta.valor_liquido or 0.0) }}</td>
-                            <td style="font-weight: 700; color: var(--primary);">R$ {{ "{:,.2f}".format(conta.valor_recebido or 0.0) }}</td>
-                            <td style="color: var(--danger); font-weight: 700;">R$ {{ "{:,.2f}".format(conta.diferenca or 0.0) }}</td>
-                            <td>{{ conta.data_pg }}</td>
-                            <td style="text-align: center; position: sticky; right: 0; background: white;">
-                                <a href="/deletar_receber/{{ conta.id }}" class="btn-delete" onclick="return confirm('Excluir este registro permanentemente?')">
-                                    <i class="fas fa-trash-alt"></i>
-                                </a>
-                            </td>
-                        </tr>
-                        {% endfor %}
+                        {% if contas and contas|length > 0 %}
+                            {% for conta in contas %}
+                            <tr>
+                                <td style="font-weight: 700;">{{ conta.mes_referencia }}</td>
+                                <td><span class="status-badge {{ 'status-pago' if 'PAGO' in (conta.status|upper if conta.status else '') else 'status-aberto' }}">{{ conta.status }}</span></td>
+                                <td>{{ conta.cidade }}</td>
+                                <td>{{ conta.servico }}</td>
+                                <td style="font-weight: 700;">{{ conta.nf }}</td>
+                                <td>{{ conta.empresa_planilha }}</td>
+                                <td>{{ conta.emissao_nota }}</td>
+                                <td>{{ conta.vencimento }}</td>
+                                <td style="font-weight: 700;">R$ {{ "{:,.2f}".format(conta.valor_nota or 0.0) }}</td>
+                                <td>{{ conta.iss_retido }}</td>
+                                <td>R$ {{ "{:,.2f}".format(conta.valor_iss or 0.0) }}</td>
+                                <td>{{ conta.porcentagem }}</td>
+                                <td>R$ {{ "{:,.2f}".format(conta.valor_ir or 0.0) }}</td>
+                                <td>R$ {{ "{:,.2f}".format(conta.valor_liquido or 0.0) }}</td>
+                                <td style="font-weight: 800; color: var(--success);">R$ {{ "{:,.2f}".format(conta.valor_recebido or 0.0) }}</td>
+                                <td style="font-weight: 800; color: var(--danger);">R$ {{ "{:,.2f}".format(conta.diferenca or 0.0) }}</td>
+                                <td>{{ conta.data_pg }}</td>
+                                <td><small>{{ conta.observacoes }}</small></td>
+                                <td style="text-align: center; position: sticky; right: 0; background: white; border-left: 1px solid #e2e8f0;">
+                                    <a href="/deletar_receber/{{ conta.id }}" class="btn-delete" title="Excluir" onclick="return confirm('Excluir este registro permanentemente?')">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="19">
+                                    <div class="empty-state">
+                                        <i class="fas fa-folder-open"></i>
+                                        <h3>Nenhum registro encontrado</h3>
+                                        <p>Utilize a importação de planilha ou lance manualmente.</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endif %}
                     </tbody>
                 </table>
             </div>
@@ -194,11 +256,15 @@
 
     <div id="modalManual" class="modal">
         <div class="modal-content">
-            <h2 style="margin-bottom: 20px; color: var(--secondary);">Novo Lançamento Manual</h2>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                <h2 style="color: var(--secondary); font-weight: 800;">Novo Lançamento Manual</h2>
+                <button onclick="closeModal()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #94a3b8;"><i class="fas fa-times"></i></button>
+            </div>
+            
             <form action="/adicionar_manual" method="POST" class="form-grid">
                 <div class="form-group">
                     <label>Mês Referência</label>
-                    <select name="mes_referencia">
+                    <select name="mes_referencia" required>
                         <option value="Janeiro">Janeiro</option>
                         <option value="Fevereiro">Fevereiro</option>
                         <option value="Março">Março</option>
@@ -213,34 +279,51 @@
                         <option value="Dezembro">Dezembro</option>
                     </select>
                 </div>
-                <div class="form-group"><label>Status</label><input type="text" name="status" placeholder="PAGO / ABERTO"></div>
-                <div class="form-group"><label>Cidade</label><input type="text" name="cidade"></div>
-                <div class="form-group"><label>Serviço</label><input type="text" name="servico"></div>
+                <div class="form-group">
+                    <label>Status</label>
+                    <select name="status" required>
+                        <option value="EM ABERTO">EM ABERTO</option>
+                        <option value="PAGO">PAGO</option>
+                    </select>
+                </div>
+                <div class="form-group"><label>Cidade</label><input type="text" name="cidade" required></div>
+                <div class="form-group"><label>Serviço</label><input type="text" name="servico" required></div>
                 
-                <div class="form-group"><label>NF</label><input type="text" name="nf" class="mask-nf"></div>
-                <div class="form-group"><label>Empresa</label><input type="text" name="empresa_planilha"></div>
-                <div class="form-group"><label>Emissão</label><input type="text" name="emissao_nota" class="mask-date"></div>
-                <div class="form-group"><label>Vencimento</label><input type="text" name="vencimento" class="mask-date"></div>
+                <div class="form-group"><label>NF</label><input type="text" name="nf" class="mask-nf" required></div>
+                <div class="form-group"><label>Empresa</label><input type="text" name="empresa_planilha" required></div>
+                <div class="form-group"><label>Emissão</label><input type="text" name="emissao_nota" class="mask-date" placeholder="DD/MM/AAAA"></div>
+                <div class="form-group"><label>Vencimento</label><input type="text" name="vencimento" class="mask-date" placeholder="DD/MM/AAAA"></div>
                 
-                <div class="form-group"><label>Valor Nota</label><input type="text" name="valor_nota" class="mask-money"></div>
-                <div class="form-group"><label>ISS Retido</label><input type="text" name="iss_retido"></div>
-                <div class="form-group"><label>Valor ISS</label><input type="text" name="valor_iss" class="mask-money"></div>
-                <div class="form-group"><label>% Porcentagem</label><input type="text" name="porcentagem"></div>
+                <div class="form-group"><label>Valor Nota</label><input type="text" name="valor_nota" class="mask-money" placeholder="R$ 0,00" required></div>
+                <div class="form-group">
+                    <label>ISS Retido</label>
+                    <select name="iss_retido">
+                        <option value="NÃO">NÃO</option>
+                        <option value="SIM">SIM</option>
+                    </select>
+                </div>
+                <div class="form-group"><label>Valor ISS</label><input type="text" name="valor_iss" class="mask-money" placeholder="R$ 0,00"></div>
+                <div class="form-group"><label>% Porcentagem</label><input type="text" name="porcentagem" placeholder="Ex: 5%"></div>
                 
-                <div class="form-group"><label>Valor IR</label><input type="text" name="valor_ir" class="mask-money"></div>
-                <div class="form-group"><label>Valor Líquido</label><input type="text" name="valor_liquido" class="mask-money"></div>
-                <div class="form-group"><label>Valor Recebido</label><input type="text" name="valor_recebido" class="mask-money"></div>
-                <div class="form-group"><label>Diferença</label><input type="text" name="diferenca" class="mask-money"></div>
+                <div class="form-group"><label>Valor IR</label><input type="text" name="valor_ir" class="mask-money" placeholder="R$ 0,00"></div>
+                <div class="form-group"><label>Valor Líquido</label><input type="text" name="valor_liquido" class="mask-money" placeholder="R$ 0,00"></div>
+                <div class="form-group"><label>Valor Recebido</label><input type="text" name="valor_recebido" class="mask-money" placeholder="R$ 0,00"></div>
+                <div class="form-group"><label>Diferença</label><input type="text" name="diferenca" class="mask-money" placeholder="R$ 0,00"></div>
                 
-                <div class="form-group"><label>Data Pagamento</label><input type="text" name="data_pg" class="mask-date"></div>
-                <div class="form-group" style="grid-column: span 3;"><label>Observações</label><input type="text" name="observacoes"></div>
+                <div class="form-group"><label>Data Pagamento</label><input type="text" name="data_pg" class="mask-date" placeholder="DD/MM/AAAA"></div>
+                <div class="form-group" style="grid-column: span 3;"><label>Observações</label><input type="text" name="observacoes" placeholder="Anotações adicionais..."></div>
 
-                <div style="grid-column: span 4; display: flex; gap: 10px; margin-top: 20px;">
-                    <button type="submit" class="btn-add" style="flex: 1; justify-content: center;">Salvar Dados</button>
-                    <button type="button" onclick="closeModal()" class="btn-add" style="background: #94a3b8;">Cancelar</button>
+                <div class="full-width" style="display: flex; justify-content: flex-end; gap: 15px; margin-top: 20px;">
+                    <button type="button" onclick="closeModal()" class="btn-add" style="background: white; border: 1px solid #cbd5e1; color: #475569;">Cancelar</button>
+                    <button type="submit" class="btn-add"><i class="fas fa-save"></i> Salvar Lançamento</button>
                 </div>
             </form>
         </div>
+    </div>
+
+    <div id="loadingOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.8); z-index: 9999; flex-direction: column; justify-content: center; align-items: center;">
+        <i class="fas fa-spinner fa-spin" style="font-size: 3rem; color: var(--primary); margin-bottom: 15px;"></i>
+        <h2 style="color: var(--secondary);">Processando Planilha...</h2>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-masker/1.2.0/vanilla-masker.min.js"></script>
@@ -248,32 +331,30 @@
         function openModal() { document.getElementById('modalManual').style.display = 'flex'; }
         function closeModal() { document.getElementById('modalManual').style.display = 'none'; }
 
-        // Aplicar máscaras
+        // Fechar modal clicando fora
+        window.onclick = function(event) {
+            let modal = document.getElementById('modalManual');
+            if (event.target == modal) { closeModal(); }
+        }
+
+        // Aplicar máscaras de Input
         function applyMasks() {
-            // Dinheiro
             document.querySelectorAll('.mask-money').forEach(el => {
-                VMasker(el).maskMoney({
-                    precision: 2,
-                    separator: ',',
-                    delimiter: '.',
-                    unit: 'R$',
-                });
+                VMasker(el).maskMoney({ precision: 2, separator: ',', delimiter: '.', unit: 'R$', zeroCents: false });
             });
-            // Datas
             document.querySelectorAll('.mask-date').forEach(el => {
                 VMasker(el).maskPattern("99/99/9999");
             });
-            // NF
-            document.querySelectorAll('.mask-nf').forEach(el => {
-                VMasker(el).maskPattern("999.999.999");
-            });
         }
 
-        // Filtro de busca
+        // Filtro de busca na tabela
         document.getElementById('searchInput').addEventListener('keyup', function() {
             let val = this.value.toLowerCase();
             document.querySelectorAll('#contasTable tbody tr').forEach(row => {
-                row.style.display = row.innerText.toLowerCase().includes(val) ? '' : 'none';
+                if (row.cells.length > 1) { // ignora o empty state
+                    let text = row.innerText.toLowerCase();
+                    row.style.display = text.includes(val) ? '' : 'none';
+                }
             });
         });
 

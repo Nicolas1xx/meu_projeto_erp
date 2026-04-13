@@ -2,72 +2,94 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestão de Contratos | Grupo L&H</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --primary: #00509e;
             --secondary: #003366;
-            --success: #27ae60;
-            --danger: #c0392b;
-            --warning: #f39c12;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
             --bg: #f8fafc;
             --white: #ffffff;
             --sidebar-w: 260px;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', 'Segoe UI', sans-serif; }
-        body { background: var(--bg); display: flex; color: #334155; }
+        body { background: var(--bg); display: flex; color: #334155; overflow-x: hidden; }
 
-        /* Sidebar padrão do Grupo L&H */
-        .sidebar { width: var(--sidebar-w); background: var(--white); height: 100vh; position: fixed; padding: 30px 20px; box-shadow: 4px 0 10px rgba(0,0,0,0.03); }
+        /* Sidebar */
+        .sidebar { width: var(--sidebar-w); background: var(--white); height: 100vh; position: fixed; padding: 30px 20px; box-shadow: 4px 0 10px rgba(0,0,0,0.03); z-index: 100; }
         .sidebar-brand { font-size: 1.5rem; font-weight: 800; color: var(--primary); margin-bottom: 40px; text-align: center; }
-        .nav-item { display: flex; align-items: center; padding: 12px 15px; color: #64748b; text-decoration: none; border-radius: 10px; margin-bottom: 5px; transition: 0.2s; }
+        .nav-item { display: flex; align-items: center; padding: 12px 15px; color: #64748b; text-decoration: none; border-radius: 10px; margin-bottom: 5px; transition: 0.2s; font-weight: 600; font-size: 0.95rem; }
         .nav-item:hover, .nav-item.active { background: var(--primary); color: white; }
-        .nav-item i { margin-right: 12px; width: 20px; }
+        .nav-item i { margin-right: 12px; width: 20px; font-size: 1.1rem; }
 
         /* Área Principal */
         .main { margin-left: var(--sidebar-w); flex: 1; padding: 40px; max-width: calc(100% - var(--sidebar-w)); }
         
-        /* Cabeçalho com Busca */
-        .page-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 30px; }
-        .search-bar { position: relative; width: 350px; }
-        .search-bar input { width: 100%; padding: 12px 15px 12px 45px; border-radius: 12px; border: 1px solid #e2e8f0; outline: none; transition: 0.3s; }
-        .search-bar i { position: absolute; left: 15px; top: 15px; color: #94a3b8; }
-        .search-bar input:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(0, 80, 158, 0.1); }
+        /* Cabeçalho e Busca */
+        .page-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 30px; flex-wrap: wrap; gap: 20px; }
+        .header-actions { display: flex; gap: 15px; align-items: center; }
+        
+        .search-bar { position: relative; width: 300px; }
+        .search-bar input { width: 100%; padding: 12px 15px 12px 45px; border-radius: 10px; border: 1px solid #e2e8f0; outline: none; transition: 0.3s; font-size: 0.9rem; }
+        .search-bar i { position: absolute; left: 15px; top: 14px; color: #94a3b8; }
+        .search-bar input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(0, 80, 158, 0.1); }
+
+        .btn-primary { background: var(--primary); color: white; border: none; padding: 12px 20px; border-radius: 10px; font-weight: 700; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 8px; font-size: 0.9rem; }
+        .btn-primary:hover { background: var(--secondary); transform: translateY(-2px); }
+
+        /* Alertas (Flash Messages) */
+        .alert { padding: 15px; border-radius: 10px; margin-bottom: 25px; font-weight: 600; font-size: 0.9rem; display: flex; align-items: center; gap: 10px; }
+        .alert-success { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+        .alert-danger { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
 
         /* Cards de Resumo */
-        .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 30px; }
-        .stat-card { background: white; padding: 20px; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
-        .stat-card small { color: #64748b; font-weight: 600; font-size: 0.75rem; text-transform: uppercase; }
-        .stat-card h2 { font-size: 1.5rem; margin-top: 5px; color: var(--secondary); }
+        .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .stat-card { background: white; padding: 20px; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); border-left: 5px solid var(--primary); }
+        .stat-card small { color: #64748b; font-weight: 700; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; }
+        .stat-card h2 { font-size: 1.6rem; margin-top: 5px; color: var(--secondary); font-weight: 800; }
 
         /* Tabela Estilizada */
-        .table-container { background: white; border-radius: 16px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05); overflow: hidden; }
-        table { width: 100%; border-collapse: collapse; }
-        th { background: #f1f5f9; padding: 15px 20px; text-align: left; font-size: 0.85rem; color: #475569; font-weight: 700; }
-        td { padding: 18px 20px; border-bottom: 1px solid #f1f5f9; font-size: 0.9rem; }
+        .table-container { background: white; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; min-width: 800px; }
+        th { background: #f8fafc; padding: 15px 20px; text-align: left; font-size: 0.8rem; color: #64748b; font-weight: 700; text-transform: uppercase; border-bottom: 2px solid #e2e8f0; }
+        td { padding: 15px 20px; border-bottom: 1px solid #f1f5f9; font-size: 0.9rem; vertical-align: middle; }
         tr:hover { background-color: #f8fafc; }
 
         /* Status & Alertas */
-        .badge { padding: 6px 12px; border-radius: 8px; font-size: 0.75rem; font-weight: 700; }
-        .badge-success { background: #dcfce7; color: #166534; }
-        .badge-warning { background: #fef9c3; color: #854d0e; }
+        .badge { padding: 6px 12px; border-radius: 6px; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; }
+        .badge-success { background: #d1fae5; color: #065f46; }
+        .badge-warning { background: #fef3c7; color: #92400e; }
         .badge-danger { background: #fee2e2; color: #991b1b; }
 
-        .profit-indicator { display: flex; align-items: center; gap: 8px; font-weight: 600; }
+        .profit-indicator { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 0.85rem; }
         .profit-up { color: var(--success); }
         .profit-down { color: var(--danger); }
 
-        /* Botão de Ação */
-        .btn-view { padding: 8px; border-radius: 8px; border: 1px solid #e2e8f0; background: white; cursor: pointer; transition: 0.2s; color: var(--primary); }
-        .btn-view:hover { background: var(--primary); color: white; border-color: var(--primary); }
+        /* Botões de Ação na Tabela */
+        .action-group { display: flex; gap: 8px; justify-content: center; }
+        .btn-icon { padding: 8px; border-radius: 8px; border: none; cursor: pointer; transition: 0.2s; font-size: 1rem; display: flex; align-items: center; justify-content: center; width: 35px; height: 35px; }
+        .btn-view { background: #eff6ff; color: var(--primary); }
+        .btn-view:hover { background: var(--primary); color: white; }
+        .btn-edit { background: #fef3c7; color: var(--warning); }
+        .btn-edit:hover { background: var(--warning); color: white; }
 
-        /* Modal (Janela Flutuante) */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; }
-        .modal-content { background: white; width: 600px; border-radius: 20px; padding: 30px; position: relative; animation: slideIn 0.3s ease; }
-        @keyframes slideIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        .close-modal { position: absolute; right: 25px; top: 25px; cursor: pointer; font-size: 1.5rem; color: #94a3b8; }
+        /* Modal */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.6); z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+        .modal-content { background: white; width: 100%; max-width: 600px; border-radius: 20px; padding: 30px; position: relative; animation: slideUp 0.3s ease; margin: 20px; }
+        @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .close-modal { position: absolute; right: 20px; top: 20px; background: none; border: none; font-size: 1.5rem; color: #94a3b8; cursor: pointer; transition: 0.2s; }
+        .close-modal:hover { color: var(--danger); }
+
+        /* Responsividade */
+        @media (max-width: 992px) {
+            .sidebar { transform: translateX(-100%); transition: 0.3s; }
+            .main { margin-left: 0; max-width: 100%; }
+        }
     </style>
 </head>
 <body>
@@ -78,18 +100,32 @@
         <a href="/faturamento" class="nav-item"><i class="fas fa-file-invoice-dollar"></i> Faturamento</a>
         <a href="/rh" class="nav-item"><i class="fas fa-users"></i> RH Corporativo</a>
         <a href="/contratos" class="nav-item active"><i class="fas fa-file-contract"></i> Contratos</a>
-        <a href="/logout" class="nav-item" style="margin-top: 100px; color: var(--danger);"><i class="fas fa-sign-out-alt"></i> Sair</a>
+        <a href="/logout" class="nav-item" style="margin-top: auto; position: absolute; bottom: 30px; width: calc(100% - 40px); color: var(--danger);"><i class="fas fa-sign-out-alt"></i> Sair</a>
     </nav>
 
     <main class="main">
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        <i class="fas fa-info-circle"></i> {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
         <div class="page-header">
             <div>
-                <h1 style="font-size: 1.8rem; font-weight: 800;">Gestão de Contratos</h1>
-                <p style="color: #64748b;">Acompanhamento de licitações e metas por unidade.</p>
+                <h1 style="font-size: 1.8rem; font-weight: 800; color: var(--secondary);">Gestão de Contratos</h1>
+                <p style="color: #64748b; margin-top: 5px;">Acompanhamento de licitações, aditivos e metas.</p>
             </div>
-            <div class="search-bar">
-                <i class="fas fa-search"></i>
-                <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="Pesquisar por município ou objeto...">
+            <div class="header-actions">
+                <div class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="Buscar município ou objeto...">
+                </div>
+                <button class="btn-primary" onclick="openNewModal()"><i class="fas fa-plus"></i> Novo Contrato</button>
             </div>
         </div>
 
@@ -98,15 +134,15 @@
                 <small>Total em Contratos</small>
                 <h2>R$ 2.450.000</h2>
             </div>
-            <div class="stat-card">
+            <div class="stat-card" style="border-color: var(--success);">
                 <small>Contratos Ativos</small>
                 <h2>12</h2>
             </div>
-            <div class="stat-card">
+            <div class="stat-card" style="border-color: var(--warning);">
                 <small>Vencendo em 30 dias</small>
                 <h2 style="color: var(--warning);">02</h2>
             </div>
-            <div class="stat-card">
+            <div class="stat-card" style="border-color: var(--danger);">
                 <small>Alerta de Margem</small>
                 <h2 style="color: var(--danger);">01</h2>
             </div>
@@ -127,36 +163,42 @@
                 <tbody>
                     <tr>
                         <td>
-                            <strong>Itapeva</strong><br>
+                            <strong style="color: var(--secondary);">Prefeitura de Itapeva</strong><br>
                             <small style="color: #64748b;">Ultrassonografia (Licitação 042/26)</small>
                         </td>
                         <td>15/10/2026</td>
-                        <td>R$ 45.000,00</td>
+                        <td style="font-weight: 600;">R$ 45.000,00</td>
                         <td>
-                            <div class="profit-indicator profit-down">
+                            <div class="profit-indicator profit-down" title="Custo ultrapassou margem de segurança">
                                 <i class="fas fa-arrow-trend-down"></i> -12% Margem
                             </div>
                         </td>
                         <td><span class="badge badge-success">VIGENTE</span></td>
-                        <td style="text-align: center;">
-                            <button class="btn-view" onclick="openDetails('Itapeva')"><i class="fas fa-eye"></i></button>
+                        <td>
+                            <div class="action-group">
+                                <button class="btn-icon btn-view" onclick="openDetails('Itapeva')" title="Ver Detalhes"><i class="fas fa-eye"></i></button>
+                                <button class="btn-icon btn-edit" title="Editar Contrato"><i class="fas fa-pen"></i></button>
+                            </div>
                         </td>
                     </tr>
                     <tr>
                         <td>
-                            <strong>Buri</strong><br>
+                            <strong style="color: var(--secondary);">Prefeitura de Buri</strong><br>
                             <small style="color: #64748b;">Plantões Médicos 24h</small>
                         </td>
                         <td>02/01/2027</td>
-                        <td>R$ 120.000,00</td>
+                        <td style="font-weight: 600;">R$ 120.000,00</td>
                         <td>
                             <div class="profit-indicator profit-up">
                                 <i class="fas fa-arrow-trend-up"></i> +18% Lucro
                             </div>
                         </td>
                         <td><span class="badge badge-warning">RENOVAÇÃO</span></td>
-                        <td style="text-align: center;">
-                            <button class="btn-view" onclick="openDetails('Buri')"><i class="fas fa-eye"></i></button>
+                        <td>
+                            <div class="action-group">
+                                <button class="btn-icon btn-view" onclick="openDetails('Buri')" title="Ver Detalhes"><i class="fas fa-eye"></i></button>
+                                <button class="btn-icon btn-edit" title="Editar Contrato"><i class="fas fa-pen"></i></button>
+                            </div>
                         </td>
                     </tr>
                 </tbody>
@@ -166,30 +208,46 @@
 
     <div id="detailsModal" class="modal">
         <div class="modal-content">
-            <span class="close-modal" onclick="closeModal()">&times;</span>
-            <h2 id="modalTitle" style="color: var(--primary); margin-bottom: 20px;">Detalhes do Contrato</h2>
-            <hr style="border: 0; border-top: 1px solid #eee; margin-bottom: 20px;">
+            <button class="close-modal" onclick="closeModal('detailsModal')"><i class="fas fa-times"></i></button>
+            <h2 id="modalTitle" style="color: var(--secondary); margin-bottom: 20px; font-weight: 800;">Detalhes do Contrato</h2>
             
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                <div>
-                    <p><strong>Meta Contratada:</strong> 500 exames/mês</p>
-                    <p><strong>Realizado (Mês):</strong> 560 exames</p>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 25px;">
+                <div style="background: #f8fafc; padding: 20px; border-radius: 12px; border: 1px solid #e2e8f0;">
+                    <h4 style="color: #64748b; font-size: 0.8rem; text-transform: uppercase; margin-bottom: 10px;">Desempenho Atual</h4>
+                    <p style="margin-bottom: 8px;"><strong>Meta Contratada:</strong> 500 exames</p>
+                    <p style="margin-bottom: 8px;"><strong>Realizado (Mês):</strong> <span style="color: var(--danger); font-weight: bold;">560 exames</span></p>
                     <p><strong>Excesso de Custo:</strong> R$ 4.200,00</p>
                 </div>
-                <div style="background: #f8fafc; padding: 15px; border-radius: 12px; border-left: 4px solid var(--danger);">
-                    <p style="color: var(--danger); font-weight: bold;">Atenção:</p>
-                    <small>O volume de exames ultrapassou a meta do lance. Recomenda-se revisão da escala ou aditivo.</small>
+                <div style="background: #fef2f2; padding: 20px; border-radius: 12px; border: 1px solid #fecaca; display: flex; flex-direction: column; justify-content: center;">
+                    <p style="color: var(--danger); font-weight: 800; margin-bottom: 5px;"><i class="fas fa-triangle-exclamation"></i> Atenção Requerida</p>
+                    <small style="color: #991b1b; line-height: 1.5;">O volume de exames ultrapassou a meta do lance. Recomenda-se revisão da escala ou solicitação de aditivo.</small>
                 </div>
             </div>
             
-            <button class="btn-view" style="width: 100%; margin-top: 25px; padding: 15px;">
-                <i class="fas fa-file-pdf"></i> Abrir Contrato Original (PDF)
+            <button class="btn-primary" style="width: 100%; justify-content: center;">
+                <i class="fas fa-file-pdf"></i> Visualizar PDF Original
             </button>
         </div>
     </div>
 
+    <div id="newContractModal" class="modal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeModal('newContractModal')"><i class="fas fa-times"></i></button>
+            <h2 style="color: var(--secondary); margin-bottom: 20px; font-weight: 800;">Lançar Novo Contrato</h2>
+            <p style="color: #64748b; margin-bottom: 20px;">Preencha os dados básicos do novo certame ou contrato direto.</p>
+            
+            <form>
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; font-size: 0.85rem; font-weight: 700; color: #475569; margin-bottom: 5px;">Município / Cliente</label>
+                    <input type="text" style="width: 100%; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; outline: none;" placeholder="Ex: Capão Bonito">
+                </div>
+                <button type="button" class="btn-primary" style="width: 100%; justify-content: center; margin-top: 10px;" onclick="closeModal('newContractModal')">Salvar Cadastro</button>
+            </form>
+        </div>
+    </div>
+
     <script>
-        // Função de busca em tempo real
+        // Filtro em tempo real da tabela
         function filterTable() {
             let input = document.getElementById("searchInput");
             let filter = input.value.toUpperCase();
@@ -205,21 +263,24 @@
             }
         }
 
-        // Funções do Modal
+        // Controle de Modais
         function openDetails(local) {
             document.getElementById('modalTitle').innerText = 'Contrato: ' + local;
             document.getElementById('detailsModal').style.display = 'flex';
         }
 
-        function closeModal() {
-            document.getElementById('detailsModal').style.display = 'none';
+        function openNewModal() {
+            document.getElementById('newContractModal').style.display = 'flex';
         }
 
-        // Fecha o modal ao clicar fora dele
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // Fechar modal clicando fora
         window.onclick = function(event) {
-            let modal = document.getElementById('detailsModal');
-            if (event.target == modal) {
-                closeModal();
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
             }
         }
     </script>
