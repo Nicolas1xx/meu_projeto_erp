@@ -66,7 +66,7 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 def limpar_moeda(val):
-    if pd.isna(val) or val is None or val == '': return 0.0
+    if pd.isna(val) or val is None or val == '' or str(val).lower() == 'nan': return 0.0
     if isinstance(val, (int, float)): return float(val)
     v_str = str(val).upper().replace('R$', '').replace(' ', '').strip().replace('.', '').replace(',', '.')
     try:
@@ -75,9 +75,16 @@ def limpar_moeda(val):
         return 0.0
 
 def formatar_data(d):
-    if pd.isna(d) or d is None: return ""
+    if pd.isna(d) or d is None or str(d).strip() == '' or str(d).lower() in ['nat', 'nan']: return ""
     if isinstance(d, datetime): return d.strftime('%d/%m/%Y')
-    return str(d).strip().split(' ')[0]
+    
+    d_str = str(d).strip().split(' ')[0]
+    if '-' in d_str and len(d_str) == 10:
+        try:
+            return datetime.strptime(d_str, '%Y-%m-%d').strftime('%d/%m/%Y')
+        except:
+            pass
+    return d_str
 
 @app.route('/')
 def index():
@@ -179,14 +186,56 @@ def upload_receber():
         flash('Formato inválido.', 'danger')
         return redirect(url_for('receber'))
     
+    # Captura qual aba de mês estava selecionada no momento do upload
+    mes_upload = request.form.get('mes_upload', 'Todos')
+    meses_pt = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro']
+    mes_atual = meses_pt[datetime.now().month - 1]
+
     try:
         df = pd.read_excel(file)
+        df.dropna(how='all', inplace=True) # Ignora linhas completamente vazias
+        
+        # Trata os nomes das colunas
         df.columns = [str(c).strip().lower() for c in df.columns]
-        mapeamento = { 'mes': 'mes_referencia', 'status': 'status', 'cidade': 'cidade', 'servico': 'servico', 'nf': 'nf', 'empresa': 'empresa_planilha', 'emissao': 'emissao_nota', 'vencimento': 'vencimento', 'valor nota': 'valor_nota', 'iss retido': 'iss_retido', 'valor iss': 'valor_iss', '%': 'porcentagem', 'valor ir': 'valor_ir', 'valor liquido': 'valor_liquido', 'valor recebido': 'valor_recebido', 'diferenca': 'diferenca', 'data pg': 'data_pg', 'obs': 'observacoes' }
+        
+        # Dicionário de Mapeamento Ultra Extenso
+        mapeamento = { 
+            'mes': 'mes_referencia', 'mês': 'mes_referencia', 'mes ref': 'mes_referencia', 'mês ref': 'mes_referencia', 'mes de referencia': 'mes_referencia',
+            'status': 'status', 'situação': 'status', 'situacao': 'status',
+            'cidade': 'cidade', 'município': 'cidade', 'municipio': 'cidade', 'local': 'cidade',
+            'servico': 'servico', 'serviço': 'servico', 'tipo de servico': 'servico', 'tipo de serviço': 'servico', 'descrição': 'servico', 'descricao': 'servico', 'objeto': 'servico',
+            'nf': 'nf', 'nota fiscal': 'nf', 'nº nota': 'nf', 'numero da nota': 'nf', 'n.f.': 'nf', 'nota': 'nf',
+            'empresa': 'empresa_planilha', 'cliente': 'empresa_planilha', 'empresa/cliente': 'empresa_planilha', 'unidade': 'empresa_planilha',
+            'emissao': 'emissao_nota', 'emissão': 'emissao_nota', 'data emissao': 'emissao_nota', 'data emissão': 'emissao_nota', 'data de emissao': 'emissao_nota', 'data de emissão': 'emissao_nota', 'emissão da nota': 'emissao_nota', 'data da emissao': 'emissao_nota', 'data da emissão': 'emissao_nota', 'dt emissao': 'emissao_nota', 'dt emissão': 'emissao_nota',
+            'vencimento': 'vencimento', 'data vencimento': 'vencimento', 'data de vencimento': 'vencimento', 'dt vencimento': 'vencimento',
+            'valor nota': 'valor_nota', 'bruto': 'valor_nota', 'valor bruto': 'valor_nota', 'valor nf': 'valor_nota',
+            'iss retido': 'iss_retido', 'iss retido?': 'iss_retido', 'tem iss': 'iss_retido',
+            'valor iss': 'valor_iss', 'iss': 'valor_iss', 'desconto iss': 'valor_iss',
+            '%': 'porcentagem', 'porcentagem': 'porcentagem', 'taxa': 'porcentagem', 'aliquota': 'porcentagem', 'alíquota': 'porcentagem',
+            'valor ir': 'valor_ir', 'ir': 'valor_ir', 'desconto ir': 'valor_ir', 'irrf': 'valor_ir', 'valor irrf': 'valor_ir',
+            'valor liquido': 'valor_liquido', 'líquido': 'valor_liquido', 'liquido': 'valor_liquido', 'valor líquido': 'valor_liquido',
+            'valor recebido': 'valor_recebido', 'recebido': 'valor_recebido', 'total recebido': 'valor_recebido',
+            'diferenca': 'diferenca', 'diferença': 'diferenca', 'saldo': 'diferenca', 'em aberto': 'diferenca',
+            'data pg': 'data_pg', 'pagamento': 'data_pg', 'data pagamento': 'data_pg', 'data de pagamento': 'data_pg', 'dt pagamento': 'data_pg', 'pago em': 'data_pg',
+            'obs': 'observacoes', 'observacoes': 'observacoes', 'observações': 'observacoes', 'historico': 'observacoes', 'histórico': 'observacoes'
+        }
         df.rename(columns=mapeamento, inplace=True)
         
+        # Inteligência de Fallback para colunas problemáticas (Serviço e Emissão)
+        for col in df.columns:
+            if col not in mapeamento.values():
+                if 'emiss' in col:
+                    df.rename(columns={col: 'emissao_nota'}, inplace=True)
+                elif 'servi' in col:
+                    df.rename(columns={col: 'servico'}, inplace=True)
+                elif 'vencim' in col:
+                    df.rename(columns={col: 'vencimento'}, inplace=True)
+                elif 'cidad' in col or 'munic' in col:
+                    df.rename(columns={col: 'cidade'}, inplace=True)
+        
         for _, row in df.iterrows():
-            if pd.isna(row.get('valor_nota')) and pd.isna(row.get('nf')): continue
+            if pd.isna(row.get('valor_nota')) and pd.isna(row.get('nf')) and pd.isna(row.get('cidade')): continue
+            
             v_nota = limpar_moeda(row.get('valor_nota'))
             v_iss = limpar_moeda(row.get('valor_iss'))
             v_ir = limpar_moeda(row.get('valor_ir'))
@@ -194,16 +243,41 @@ def upload_receber():
             v_liq = (v_nota - v_iss - v_ir) if pd.isna(row.get('valor_liquido')) else limpar_moeda(row.get('valor_liquido'))
             v_dif = (v_liq - v_rec) if pd.isna(row.get('diferenca')) else limpar_moeda(row.get('diferenca'))
             
+            # Ajuste inteligente do Mês (Prioriza a Aba do sistema sobre a Planilha)
+            mes_planilha = row.get('mes_referencia')
+            if pd.isna(mes_planilha) or str(mes_planilha).strip() == '' or str(mes_planilha).lower() in ['nan', 'nat', 'none']:
+                mes_final = mes_upload if mes_upload != 'Todos' else mes_atual
+            else:
+                mes_final = str(mes_planilha).strip().capitalize()
+
             nova_conta = ContaReceber(
-                empresa_slug=session.get('empresa_slug'), mes_referencia=str(row.get('mes_referencia', 'Todos')), status=str(row.get('status', 'ABERTO')).upper(), cidade=str(row.get('cidade', '')), servico=str(row.get('servico', '')), nf=str(row.get('nf', '')).replace('.0',''), empresa_planilha=str(row.get('empresa_planilha', '')), emissao_nota=formatar_data(row.get('emissao_nota')), vencimento=formatar_data(row.get('vencimento')), valor_nota=v_nota, iss_retido=str(row.get('iss_retido', 'NÃO')).upper(), valor_iss=v_iss, porcentagem=str(row.get('porcentagem', '')), valor_ir=v_ir, valor_liquido=v_liq, valor_recebido=v_rec, diferenca=v_dif, data_pg=formatar_data(row.get('data_pg')), observacoes=str(row.get('observacoes', ''))
+                empresa_slug=session.get('empresa_slug'), 
+                mes_referencia=mes_final, 
+                status=str(row.get('status', 'ABERTO')).upper().replace('NAN', 'ABERTO'), 
+                cidade=str(row.get('cidade', '')).replace('nan', ''), 
+                servico=str(row.get('servico', '')).replace('nan', ''), 
+                nf=str(row.get('nf', '')).replace('.0','').replace('nan', ''), 
+                empresa_planilha=str(row.get('empresa_planilha', '')).replace('nan', ''), 
+                emissao_nota=formatar_data(row.get('emissao_nota')), 
+                vencimento=formatar_data(row.get('vencimento')), 
+                valor_nota=v_nota, 
+                iss_retido=str(row.get('iss_retido', 'NÃO')).upper().replace('NAN', 'NÃO'), 
+                valor_iss=v_iss, 
+                porcentagem=str(row.get('porcentagem', '')).replace('nan', ''), 
+                valor_ir=v_ir, 
+                valor_liquido=v_liq, 
+                valor_recebido=v_rec, 
+                diferenca=v_dif, 
+                data_pg=formatar_data(row.get('data_pg')), 
+                observacoes=str(row.get('observacoes', '')).replace('nan', '')
             )
             db.session.add(nova_conta)
         db.session.commit()
-        flash('Registros sincronizados!', 'success')
+        flash('Registros sincronizados e limpos!', 'success')
     except Exception as e:
         db.session.rollback()
-        flash(f'Erro: {e}', 'danger')
-    return redirect(url_for('receber'))
+        flash(f'Erro ao processar planilha: {e}', 'danger')
+    return redirect(url_for('receber', mes=mes_upload))
 
 @app.route('/adicionar_manual', methods=['POST'])
 @login_required
@@ -216,7 +290,25 @@ def adicionar_manual():
         v_liq = v_nota - v_iss - v_ir
         
         nova_conta = ContaReceber(
-            empresa_slug=session.get('empresa_slug'), mes_referencia=request.form.get('mes_referencia'), status=request.form.get('status', '').upper(), cidade=request.form.get('cidade'), servico=request.form.get('servico'), nf=request.form.get('nf'), empresa_planilha=request.form.get('empresa_planilha'), emissao_nota=request.form.get('emissao_nota'), vencimento=request.form.get('vencimento'), valor_nota=v_nota, iss_retido=request.form.get('iss_retido', '').upper(), valor_iss=v_iss, porcentagem=request.form.get('porcentagem'), valor_ir=v_ir, valor_liquido=v_liq, valor_recebido=v_rec, diferenca=v_liq - v_rec, data_pg=request.form.get('data_pg'), observacoes=request.form.get('observacoes')
+            empresa_slug=session.get('empresa_slug'), 
+            mes_referencia=request.form.get('mes_referencia'), 
+            status=request.form.get('status', '').upper(), 
+            cidade=request.form.get('cidade'), 
+            servico=request.form.get('servico'), 
+            nf=request.form.get('nf'), 
+            empresa_planilha=request.form.get('empresa_planilha'), 
+            emissao_nota=request.form.get('emissao_nota'), 
+            vencimento=request.form.get('vencimento'), 
+            valor_nota=v_nota, 
+            iss_retido=request.form.get('iss_retido', '').upper(), 
+            valor_iss=v_iss, 
+            porcentagem=request.form.get('porcentagem'), 
+            valor_ir=v_ir, 
+            valor_liquido=v_liq, 
+            valor_recebido=v_rec, 
+            diferenca=v_liq - v_rec, 
+            data_pg=request.form.get('data_pg'), 
+            observacoes=request.form.get('observacoes')
         )
         db.session.add(nova_conta)
         db.session.commit()
@@ -232,6 +324,15 @@ def deletar_receber(id):
     db.session.delete(ContaReceber.query.get_or_404(id))
     db.session.commit()
     flash('Registro removido!', 'info')
+    return redirect(request.referrer or url_for('receber'))
+
+@app.route('/limpar_receber')
+@login_required
+def limpar_receber():
+    slug = session.get('empresa_slug')
+    ContaReceber.query.filter_by(empresa_slug=slug).delete()
+    db.session.commit()
+    flash('Todos os dados foram apagados da base com sucesso!', 'warning')
     return redirect(url_for('receber'))
 
 def setup_db():
